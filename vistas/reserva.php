@@ -87,3 +87,6 @@ else {
 }
 
 ?>
+
+
+$(document).on('click', '.accionesTabla', function() {

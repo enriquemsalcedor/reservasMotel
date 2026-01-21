@@ -31,7 +31,9 @@
             <div class="text-center">
               <img alt="Logo" src="./assets/images/logo.png" class="circle-img" style="width: 100px;"/>
             </div>
-            <h5 class="card-title text-center"><strong>Iniciar Sesión</strong></h5>
+            <!-- <h5 class="card-title text-center"><strong>Iniciar Sesión</strong></h5> -->
+            <h5 class="card-title text-center"><strong>Motel Caseteja</strong></h5>
+
             <form class="form-signin" id="frmlogin">
               <div class="form-label-group">
                 <input type="text" id="inputEmail" name="inputEmail" class="form-control" placeholder="Email address" required autofocus>
