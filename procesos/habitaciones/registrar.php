@@ -1,13 +1,14 @@
 <?php
-require_once '../../clases/Producto.php';
+require_once '../../clases/Habitacion.php';
 require_once '../../clases/Conexion.php';
-$nombre = $_POST['txtnombre'];
-$txtprecioc = $_POST['txtprecioc'];
-$txtpreciov = $_POST['txtpreciov'];
-$txtstock = $_POST['txtstock'];
-$txtproveedor = $_POST['txtproveedor'];
-$txtcategoria = $_POST['txtcategoria'];
-$datos = array($nombre,$txtprecioc,$txtpreciov,$txtstock,$txtproveedor,$txtcategoria);
-$obj = new Producto();
+$txtnumero = $_POST['txtnumero'];
+$txtprecio = $_POST['txtprecio'];
+$txtdescripcion = $_POST['txtdescripcion'];
+$txtpreciohora = $_POST['txtpreciohora'];
+$txtestadohabitacion = $_POST['txtestadohabitacion'];
+$txttipohabitacion = $_POST['txttipohabitacion'];
+
+$datos = array($txtnumero,$txtdescripcion,$txtprecio,$txtpreciohora,$txtestadohabitacion,$txttipohabitacion);
+$obj = new Habitacion();
 echo $obj->save($datos);
 ?>

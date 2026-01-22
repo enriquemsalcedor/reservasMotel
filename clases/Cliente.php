@@ -1,18 +1,16 @@
 <?php
-class Habitacion{
+class Cliente{
     public function save($datos)
     {
         $c = new Conexion();
         $conexion = $c->conectar();
-        $numero = $c->test_input($datos[0]);
-        $desc = $c->test_input($datos[1]);
-        $precio = $c->test_input($datos[2]);
-        $precio_hora = $c->test_input($datos[3]);
-        $estado_habitacion = $c->test_input($datos[4]);
-        $tipo_habitacion = $c->test_input($datos[5]);
-        
-        $sql = "INSERT INTO habitacion(numero,descripcion,id_tipo_habitacion,id_estado_habitacion,precio,precio_hora,estatus) 
-                values('$numero','$desc',$tipo_habitacion,$estado_habitacion,$precio,$precio_hora,'A')";
+        $cedula = $c->test_input($datos[0]);
+        $nombre = $c->test_input($datos[1]);
+        $apellido = $c->test_input($datos[2]);
+        $telefono = $c->test_input($datos[3]);
+        $direccion = $c->test_input($datos[4]);
+        $sql = "INSERT INTO cliente(nombre,apellido,cedula,telefono,direccion,estatus) 
+                values('$nombre','$apellido','$cedula','$telefono','$direccion','A')";
         $result = mysqli_query($conexion,$sql);
         return $result;
     }
@@ -45,10 +43,7 @@ class Habitacion{
     {
             $c = new Conexion();
 			$conexion = $c->conectar();
-			$sql = "SELECT h.*, e.nombre as estado, t.nombre as tipo_habitacion FROM habitacion h 
-				JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id 
-				JOIN estado_habitacion e ON h.id_estado_habitacion = e.id
-                WHERE h.estatus <> 'E'";
+			$sql = "SELECT * FROM cliente";
 			$result = mysqli_query($conexion,$sql);
             return $result; 
     }
@@ -68,40 +63,39 @@ class Habitacion{
     {
             $c = new Conexion();
 			$conexion = $c->conectar();
-			$sql = "select * from habitacion where id=$id";
+			$sql = "select * from cliente where id=$id";
 			$result = mysqli_query($conexion,$sql);
             $ver = mysqli_fetch_row($result);
             $datos = array(
                "id" =>html_entity_decode($ver[0]),
-               "numero" =>html_entity_decode($ver[1]),
-               "descripcion" =>html_entity_decode($ver[2]),
-               "id_tipo_habitacion" =>html_entity_decode($ver[3]),
-               "id_estado_habitacion" =>html_entity_decode($ver[4]),
-               "precio" =>html_entity_decode($ver[5]),
-               "precio_hora" =>html_entity_decode($ver[6]),
-               "estatus" =>html_entity_decode($ver[7]),
+               "nombre" =>html_entity_decode($ver[1]),
+               "apellido" =>html_entity_decode($ver[2]),
+               "telefono" =>html_entity_decode($ver[3]),
+               "direccion" =>html_entity_decode($ver[4]),
+               "estatus" =>html_entity_decode($ver[5]),
              );
             return $datos;
     }
     
-    public function traerDatos($id)
+    public function buscar($cedula)
     {
             $c = new Conexion();
 			$conexion = $c->conectar();
-			$sql = "SELECT h.id, h.numero, h.precio, h.precio_hora, t.nombre as tipo_habitacion, h.descripcion
-                    FROM habitacion h 
-				    JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id 
-                    WHERE h.id = $id";
+			$sql = "SELECT * FROM cliente WHERE cedula = '$cedula'";
 			$result = mysqli_query($conexion,$sql);
-            $ver = mysqli_fetch_row($result);
-            $datos = array(
-               "id" =>html_entity_decode($ver[0]),
-               "numero" =>html_entity_decode($ver[1]),
-               "precio" =>html_entity_decode($ver[2]),
-               "precio_hora" =>html_entity_decode($ver[3]),
-               "tipo_habitacion" =>html_entity_decode($ver[4]),
-               "descripcion" =>html_entity_decode($ver[5]),
-             );
+            if($result->num_rows > 0){
+                $ver = mysqli_fetch_row($result);
+                $datos = array(
+                "id" =>html_entity_decode($ver[0]),
+                "cedula" =>html_entity_decode($ver[1]),
+                "nombre" =>html_entity_decode($ver[2]),
+                "apellido" =>html_entity_decode($ver[3]),
+                "telefono" =>html_entity_decode($ver[4]),
+                "direccion" =>html_entity_decode($ver[5]),
+                );
+            }else{
+                $datos = 0;
+            }
             return $datos;
     }
     

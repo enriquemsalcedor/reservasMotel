@@ -19,7 +19,6 @@ date_default_timezone_set("America/Lima");
                     <div class="row">
                                 <div class="col-xl-12">
                                         <div class="breadcrumb-holder">
-                                                <h1 class="main-title float-left"><?php echo $_SESSION['datos']->tipo_usuario ?></h1>
                                                 <div class="clearfix"></div>
                                         </div>
                                 </div>
@@ -51,18 +50,18 @@ date_default_timezone_set("America/Lima");
                                                 <h5 class="text-white text-uppercase m-b-20">Dinero del Dia</h5>
                                                 <h4 class="m-b-20 text-white counter">
                                                     <?php
-                                                        // require_once '../clases/Reporte.php';
-                                                        // require_once '../clases/Conexion.php';
-                                                        // $obj1 = new Reporte();
-                                                        // $r1 = $obj1->dinero_dia();
-                                                        // if(empty($r1))
-                                                        // {
-                                                        //     echo "0";
-                                                        // }
-                                                        // else
-                                                        // {
-                                                        //     echo $r1;
-                                                        // }
+                                                        require_once '../clases/Reporte.php';
+                                                        require_once '../clases/Conexion.php';
+                                                        $obj1 = new Reporte();
+                                                        $r1 = $obj1->dinero_dia();
+                                                        if(empty($r1))
+                                                        {
+                                                            echo "$ 0.00";
+                                                        }
+                                                        else
+                                                        {
+                                                            echo "$ ". number_format($r1, 2, ',', ' ');
+                                                        }
                                                         
                                                     ?>
                                                 </h4>
@@ -73,21 +72,21 @@ date_default_timezone_set("America/Lima");
                                 <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                                         <div class="card-box noradius noborder bg-success" style="height: 140px;">
                                                 <i class="fa fa-car float-right text-white"></i>
-                                                <h5 class="text-white text-uppercase m-b-20">Vehículos</h5>
+                                                <h5 class="text-white text-uppercase m-b-20">Vehículos del dia</h5>
                                                 <h4 class="m-b-20 text-white counter">
                                                                     <?php
-                                                                        // require_once '../clases/Reporte.php';
-                                                                        // require_once '../clases/Conexion.php';
-                                                                        // $obj2 = new Reporte();
-                                                                        // $r2 = $obj2->productos_dia();
-                                                                        // if(empty($r2))
-                                                                        // {
-                                                                        //     echo "0";
-                                                                        // }
-                                                                        // else
-                                                                        // {
-                                                                        //     echo $r2;
-                                                                        // }
+                                                                        require_once '../clases/Reporte.php';
+                                                                        require_once '../clases/Conexion.php';
+                                                                        $obj2 = new Reporte();
+                                                                        $r2 = $obj2->vehiculos_dia();
+                                                                        if(empty($r2))
+                                                                        {
+                                                                            echo "0";
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            echo $r2;
+                                                                        }
                                                                     ?>
                                                 </h4>
                                                 <span class="text-white"><br></span>
@@ -99,13 +98,20 @@ date_default_timezone_set("America/Lima");
                                                 <i class="fa fa-male float-right text-white"></i>
                                                 <h5 class="text-white text-uppercase m-b-20">Total Clientes Atendidos</h5>
                                                 <h4 class="m-b-20 text-white counter">
-                                                                    <?php
-                                                                        // require_once '../clases/Reporte.php';
-                                                                        // require_once '../clases/Conexion.php';
-                                                                        // $obj2 = new Reporte();
-                                                                        // $r2 = $obj2->stock_0();
-                                                                        // echo $r2;
-                                                                    ?>
+                                                        <?php
+                                                            require_once '../clases/Reporte.php';
+                                                            require_once '../clases/Conexion.php';
+                                                            $obj2 = new Reporte();
+                                                            $r2 = $obj2->total_clientes();
+                                                            if(empty($r2))
+                                                            {
+                                                                echo "0";
+                                                            }
+                                                            else
+                                                            {
+                                                                echo $r2;
+                                                            }
+                                                        ?>
                                                 </h4>
                                                 <span class="text-white"><br></span>
                                         </div>

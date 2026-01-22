@@ -12,7 +12,7 @@ if(isset($_SESSION['usuario']))
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
-		<title>Ventas</title>
+		<title>Motel Caseteja</title>
 
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="../assets/images/ico.png">
@@ -148,8 +148,8 @@ if(isset($_SESSION['usuario']))
                 <li class="submenu">
                     <a href="#"><i class="fa fa-fw fa-male"></i> <span> Cliente </span> <span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
-                            <li><a href="reserva.php"> Clientes </a></li>
-                            <li><a href="habitaciones.php"> Registro de Vehiculo </a></li>
+                            <li><a href="clientes.php"> Clientes </a></li>
+                            <li><a href="vehiculo.php"> Registro de Vehiculo </a></li>
                         </ul>
                 </li>
 

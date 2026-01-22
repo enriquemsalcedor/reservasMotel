@@ -25,14 +25,42 @@ if(isset($_SESSION['usuario']))
            
            <div class="col-lg-12">
            <form id="frmregistrar">
-            <label>Nombre (*)</label>
-            <input type="text" class="form-control" id="txtnombre" name="txtnombre">
-            <label>Direccion</label>
-            <input type="text" class="form-control" id="txtdireccion" name="txtdireccion">
-            <label>Telefono</label>
-            <input type="text" class="form-control" id="txttelefono" name="txttelefono">
-            <label>Email</label>
-            <input type="text" class="form-control" id="txtemail" name="txtemail">
+            <label>Numero (*)</label>
+            <input type="text" class="form-control" id="txtnumero" name="txtnumero">
+            <label>Descripcion</label>
+            <input type="text" class="form-control" id="txtdescripcion" name="txtdescripcion">
+            <label>Tipo habitacion</label>
+            <select class="form-control" id="selecttipohabitacion">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/TipoHabitacion.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new TipoHabitacion();
+                    $result = $obj->mostrar();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <input type="hidden" class="form-control" id="txttipohabitacion">
+            <label>Estado habitacion</label>
+            <select class="form-control" id="selectestadohabitacion">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/EstadoHabitacion.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new EstadoHabitacion();
+                    $result = $obj->mostrar();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <input type="hidden" class="form-control" id="txtestadohabitacion">
+            <label>Precio 24 horas</label>
+            <input type="text" class="form-control" id="txtprecio" name="txtprecio">
+            <label>Precio 1 hora</label>
+            <input type="text" class="form-control" id="txtpreciohora" name="txtpreciohora">
              </form>
             </div>
            
@@ -63,17 +91,49 @@ if(isset($_SESSION['usuario']))
         <div class="row">
            
            <div class="col-lg-12">
-           <form id="frmeditar">
-            <label>Nombre (*)</label>
-            <input type="text" class="form-control" id="txtnombree" name="txtnombree">
-            <label>Direccion</label>
-            <input type="text" class="form-control" id="txtdireccione" name="txtdireccione">
-            <label>Telefono</label>
-            <input type="text" class="form-control" id="txttelefonoe" name="txttelefonoe">
-            <label>Email</label>
-            <input type="text" class="form-control" id="txtemaile" name="txtemaile">
-            </form>
-            </div>
+           <label>Numero (*)</label>
+            <input type="text" class="form-control" id="txtnumeroe" name="txtnumero">
+            <label>Descripcion</label>
+            <input type="text" class="form-control" id="txtdescripcione" name="txtdescripcion">
+            <label>Tipo habitacion</label>
+            <select class="form-control" id="selecttipohabitacione">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/TipoHabitacion.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new TipoHabitacion();
+                    $result = $obj->mostrar();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <input type="hidden" class="form-control" id="txttipohabitacione">
+            <label>Estado habitacion</label>
+            <select class="form-control" id="selectestadohabitacione">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/EstadoHabitacion.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new EstadoHabitacion();
+                    $result = $obj->mostrar();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <input type="hidden" class="form-control" id="txtestadohabitacione">
+            <label>Precio 24 horas</label>
+            <input type="text" class="form-control" id="txtprecioe" name="txtprecio">
+            <label>Precio 1 hora</label>
+            <input type="text" class="form-control" id="txtpreciohorae" name="txtpreciohora">
+            <label>Estatus</label>
+            <select class="form-control" id="selectestatuse">
+                <option value="A">Activo</option>
+                <option value="I">Inctivo</option>
+            </select>
+            <input type="hidden" class="form-control" id="txtestatuse" name="txtpreciohora">
+        </div>
            
         </div>
       </div>
@@ -230,36 +290,50 @@ $(document).on('click', '.accionesTabla', function() {
                     $.ajax({
                         method : "GET",
                         url : "../procesos/habitaciones/traer.php",
-                        data:'id_proveedor='+id
+                        data:'id='+id
                     }).done(function(msg) {
                         var dato=JSON.parse(msg);
-				        $('#txtnombree').val(dato['nombre']);
-                        $('#txtdireccione').val(dato['direccion']);
-                        $('#txttelefonoe').val(dato['telefono']);
-                        $('#txtemaile').val(dato['email']);
-                        
+				        $('#txtnumeroe').val(dato['numero']);
+                        $('#txtdescripcione').val(dato['descripcion']);
+                        $('#txtprecioe').val(dato['precio']);
+                        $('#txtestadohabitacione').val(dato['id_estado_habitacion']);
+                        $('#selectestadohabitacione').val(dato['id_estado_habitacion']);
+                        $('#txttipohabitacione').val(dato['id_tipo_habitacion']);
+                        $('#selecttipohabitacione').val(dato['id_tipo_habitacion']);
+                        $('#txtpreciohorae').val(dato['precio_hora']);
+                        $('#txtestatuse').val(dato['estatus']);
+                        $('#selectestatuse').val(dato['estatus']);
+
                         
                         
                         $('#btneditar').unbind().click(function(){
                             
-                            noma = $("#txtnombree").val();
-                            dire = $("#txtdireccione").val();
-                            tele = $("#txttelefonoe").val();
-                            ema = $("#txtemaile").val();
-                            if(noma.length != 0)
+                            numero = $('#txtnumeroe').val();
+                            desc = $('#txtdescripcione').val();
+                            precio = $('#txtprecioe').val();
+                            estado = $('#txtestadohabitacione').val();
+                            tipo = $('#txttipohabitacione').val();
+                            precio_hora = $('#txtpreciohorae').val();
+
+                            if(numero.length != 0 || desc.length != 0 || precio.length != 0 || estado.length != 0 ||
+                                tipo.length != 0 || precio_hora.length != 0 
+                            )
                                 {
-                             oka = {
-						                "txtnombree" : noma , "id_proveedor" : id,
-                                        "txtdireccione" : dire , "txttelefonoe" : tele,
-                                        "txtemaile" : ema
-                                };
-                            //alert(oka);
-                            //alert(JSON.stringify(oka));
+                                datos = {
+                                        'txtnumero' : $('#txtnumeroe').val(), 
+                                        'txtdescripcion': $('#txtdescripcione').val(),
+                                        'txtprecio': $('#txtprecioe').val(), 
+                                        'txtpreciohora': $('#txtpreciohorae').val(),
+                                        'txtestadohabitacion': $('#txtestadohabitacione').val(),
+                                        'txttipohabitacion': $('#txttipohabitacione').val(), 
+                                        'txtestatus': $('#txtestatuse').val(), 
+                                    }
+                            
                             $.ajax({
                                 method : "POST",
                                 //contentType: 'application/json; charset=utf-8',
                                 url : "../procesos/habitaciones/editar.php",
-                                data : oka
+                                data : datos
                                 }).done(function(msg) {
                                 alertify.success("Habitación Editada Correctamente!");
                                 table.ajax.reload();
@@ -303,10 +377,26 @@ $(document).on('click', '.accionesTabla', function() {
     
     
     $('#btnregistrar').click(function(){
-       nom = $('#txtnombre').val();
-        if(nom.length != 0 )
+        numero = $('#txtnumero').val();
+        desc = $('#txtdescripcion').val();
+        precio = $('#txtprecio').val();
+        estado = $('#txtestadohabitacion').val();
+        tipo = $('#txttipohabitacion').val();
+        precio_hora = $('#txtpreciohora').val();
+               
+        if(numero.length != 0 || desc.length != 0 || precio.length != 0 || estado.length != 0 ||
+            tipo.length != 0 || precio_hora.length != 0 
+        )
             {
-            datos = $('#frmregistrar').serialize();
+            datos = {
+                    'txtnumero' : $('#txtnumero').val(), 
+                    'txtdescripcion': $('#txtdescripcion').val(),
+                    'txtprecio': $('#txtprecio').val(), 
+                    'txtpreciohora': $('#txtpreciohora').val(),
+                    'txtestadohabitacion': $('#txtestadohabitacion').val(),
+                    'txttipohabitacion': $('#txttipohabitacion').val(), 
+                }
+
             $.ajax({
                type:'post',
                 url:'../procesos/habitaciones/registrar.php',
@@ -316,7 +406,7 @@ $(document).on('click', '.accionesTabla', function() {
                     
                     if(r==1)
                         {
-                            alertify.success("Proveedor Registrado Correcamente");
+                            alertify.success("Habitacióon Registrada Correcamente");
                             table.ajax.reload();
                         }
                     else if(r==0)
@@ -333,6 +423,16 @@ $(document).on('click', '.accionesTabla', function() {
         else{
             alertify.error("Complete los datos");
         }
+    });
+
+    $('#selecttipohabitacion').on('change', function() {
+        var val = $(this).val();
+        $('#txttipohabitacion').val(val);
+    });
+
+    $('#selectestadohabitacion').on('change', function() {
+        var val = $(this).val();
+        $('#txtestadohabitacion').val(val);
     });
 });
 </script>
