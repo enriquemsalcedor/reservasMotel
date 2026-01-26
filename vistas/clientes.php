@@ -26,7 +26,17 @@ if(isset($_SESSION['usuario']))
            <div class="col-lg-12">
            <form id="frmregistrar">
             <label>Cedula (*)</label>
-            <input type="text" class="form-control" id="txtcedula" name="txtcedula">
+            <div style="display:flex;">
+                <div style="display: flex; width: 100%;">
+                    <select name="" class="form-control" id="tipocliente" style="width: 15%; margin-right: 5px;">
+                        <option value="V">V</option>
+                        <option value="E">E</option>
+                        <option value="J">J</option>
+                        <option value="G">G</option>
+                    </select>
+                    <input type="text" class="form-control" id="txtcedula" name="txtcedula">
+                </div>
+            </div>
             <label>Nombre (*)</label>
             <input type="text" class="form-control" id="txtnombre" name="txtnombre">
             <label>Apellido (*)</label>
@@ -67,7 +77,15 @@ if(isset($_SESSION['usuario']))
            <div class="col-lg-12">
            <form id="frmeditar">
             <label>Cedula (*)</label>
-            <input type="text" class="form-control" id="txtcedulae" name="txtcedula">
+            <div style="display: flex; width: 100%;">
+                <select name="" class="form-control" id="tipoclientee" style="width: 15%; margin-right: 5px;" disabled>
+                    <option value="V">V</option>
+                    <option value="E">E</option>
+                    <option value="J">J</option>
+                    <option value="G">G</option>
+                </select>
+                <input type="text" class="form-control" id="txtcedulae" name="txtcedula" disabled>
+            </div>
             <label>Nombre (*)</label>
             <input type="text" class="form-control" id="txtnombree" name="txtnombre">
             <label>Apellido (*)</label>
@@ -76,6 +94,11 @@ if(isset($_SESSION['usuario']))
             <input type="text" class="form-control" id="txtdireccione" name="txtdireccion">
             <label>Telefono</label>
             <input type="text" class="form-control" id="txttelefonoe" name="txttelefono">
+            <label>Estatus</label>
+            <select name="" class="form-control" id="txtestatuse">
+                    <option value="A">Activo</option>
+                    <option value="I">Inactivo</option>
+                </select>
             </form>
             </div>
            
@@ -124,6 +147,7 @@ if(isset($_SESSION['usuario']))
                                     <td>Nombre</td>
                                     <td>Apellido</td>
                                     <td>Telefono</td>
+                                    <td>Estatus</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -189,6 +213,9 @@ $(document).ready(function(){
                 "data":"telefono"
             },
             {
+                "data":"estatus"
+            },
+            {
                 sTitle: "Eliminar",
                 mDataProp: "id",
                 sWidth: '7%',
@@ -231,12 +258,14 @@ $(document).on('click', '.accionesTabla', function() {
                         data:'id='+id
                     }).done(function(msg) {
                         var dato=JSON.parse(msg);
+                        $('#tipoclientee').val(dato['tipo_cliente']);
 				        $('#txtnombree').val(dato['nombre']);
                         $('#txtdireccione').val(dato['direccion']);
                         $('#txttelefonoe').val(dato['telefono']);
                         $('#txtapellidoe').val(dato['apellido']);
                         $('#txtcedulae').val(dato['cedula']);                        
-                        
+                        $('#estatus').val(dato['estatus']);
+
                         $('#btneditar').unbind().click(function(){
                             
                             nom = $('#txtnombree').val();
@@ -245,11 +274,13 @@ $(document).on('click', '.accionesTabla', function() {
                                     {
                              datos = {
                                 'id': id,
+                                'txttipocliente': $('#tipoclientee').val(),
                                 'txtcedula': $('#txtcedulae').val(),
                                 'txtnombre': $('#txtnombree').val(),
                                 'txtapellido': $('#txtapellidoe').val(),
                                 'txttelefono': $('#txttelefonoe').val(),
                                 'txtdireccion': $('#txtdireccione').val(),
+                                'txtestatus': $('#txtestatuse').val(),
                             }
                             //alert(oka);
                             //alert(JSON.stringify(oka));
@@ -259,7 +290,7 @@ $(document).on('click', '.accionesTabla', function() {
                                 url : "../procesos/clientes/editar.php",
                                 data : datos
                                 }).done(function(msg) {
-                                alertify.success("Habitación Editada Correctamente!");
+                                alertify.success("Cliente Editado Correctamente!");
                                 table.ajax.reload();
                                 });                               
                                     
@@ -273,14 +304,14 @@ $(document).on('click', '.accionesTabla', function() {
             break;
         case "Eliminar":
             
-            alertify.confirm('Eliminar Habitación', '¿Esta seguro que desea eliminar este Habitación?', function()
+            alertify.confirm('Eliminar Cliente', '¿Esta seguro que desea eliminar este Cliente?', function()
                 {
                         $.ajax({
                                 type:"POST",
-                                url : "../procesos/habitaciones/eliminar.php",
+                                url : "../procesos/clientes/eliminar.php",
                                 data : "id="+id
                             }).done(function(msg) {
-                                alertify.success("Habitación Eliminado Correctamente");
+                                alertify.success("Cliente Eliminado Correctamente");
                                 table.ajax.reload();
                             });
                 }
@@ -303,41 +334,49 @@ $(document).on('click', '.accionesTabla', function() {
     $('#btnregistrar').click(function(){
        nom = $('#txtnombre').val();
        ced = $('#txtcedula').val();
-        if(nom.length != 0 || ced.length != 0)
-            {
-            datos = {
-                'txtcedula': $('#txtcedula').val(),
-                'txtnombre': $('#txtnombre').val(),
-                'txtapellido': $('#txtapellido').val(),
-                'txttelefono': $('#txttelefono').val(),
-                'txtdireccion': $('#txtdireccion').val(),
-            }
-            $.ajax({
-               type:'post',
-                url:'../procesos/clientes/registrar.php',
-                data:datos,
-                success:function(r)
-                {
-                    
-                    if(r==1)
+       tip = $('#tipocliente').val();
+        $.get( '../procesos/funciones.php?accion=existCliente&cedula='+ced+'&tipo='+tip, function(result){
+            if(result == 0){
+                if(nom.length != 0 || ced.length != 0){
+                    datos = {
+                        'txtitpocliente': $('#tipocliente').val(),
+                        'txtcedula': $('#txtcedula').val(),
+                        'txtnombre': $('#txtnombre').val(),
+                        'txtapellido': $('#txtapellido').val(),
+                        'txttelefono': $('#txttelefono').val(),
+                        'txtdireccion': $('#txtdireccion').val(),
+                    }
+                    $.ajax({
+                    type:'post',
+                        url:'../procesos/clientes/registrar.php',
+                        data:datos,
+                        success:function(r)
                         {
-                            alertify.success("Cliente Registrado Correcamente");
-                            table.ajax.reload();
+                            
+                            if(r==1)
+                                {
+                                    alertify.success("Cliente Registrado Correcamente");
+                                    table.ajax.reload();
+                                }
+                            else if(r==0)
+                                {
+                                    alertify.error("No se pudo registrar");
+                                }
+                            else
+                                {
+                                    alert(r);
+                                }
                         }
-                    else if(r==0)
-                        {
-                            alertify.error("No se pudo registrar");
-                        }
-                    else
-                        {
-                            alert(r);
-                        }
+                    });
+                    }
+                else{
+                    alertify.error("Complete los datos");
                 }
-            });
+
+            }else{
+                alertify.error("Cliente ya existe");
             }
-        else{
-            alertify.error("Complete los datos");
-        }
+        })
     });
 });
 </script>

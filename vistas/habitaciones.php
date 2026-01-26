@@ -303,8 +303,6 @@ $(document).on('click', '.accionesTabla', function() {
                         $('#txtpreciohorae').val(dato['precio_hora']);
                         $('#txtestatuse').val(dato['estatus']);
                         $('#selectestatuse').val(dato['estatus']);
-
-                        
                         
                         $('#btneditar').unbind().click(function(){
                             

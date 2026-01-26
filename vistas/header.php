@@ -50,6 +50,7 @@ if(isset($_SESSION['usuario']))
         <div class="headerbar-left">
 			<a href="inicio.php" class="logo"><img alt="Logo" src="../assets/images/logo.png" class="circle-img"/> <span></span></a>
         </div>
+        <input type="hidden" id="session" value="<?php echo $_SESSION['usuario']; ?>">
 
         <nav class="navbar-custom">
 
@@ -139,7 +140,7 @@ if(isset($_SESSION['usuario']))
                     <a href="#"><i class="fa fa-fw fa-bed"></i> <span> Habitaciones </span> <span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
                             <li><a href="reserva.php"> Reservas </a></li>
-                            <li><a href="habitaciones.php"> Registro de Habitaciones </a></li>
+                            <li><a href="habitaciones.php"> Habitaciones </a></li>
                             <li><a href="tipo_habitacion.php"> Tipo de Habitaciones </a></li>
                             <li><a href="estado_habitacion.php"> Estado de Habitaciones </a></li>
                         </ul>
@@ -149,35 +150,36 @@ if(isset($_SESSION['usuario']))
                     <a href="#"><i class="fa fa-fw fa-male"></i> <span> Cliente </span> <span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
                             <li><a href="clientes.php"> Clientes </a></li>
-                            <li><a href="vehiculo.php"> Registro de Vehiculo </a></li>
+                            <li><a href="vehiculo.php"> Vehiculo </a></li>
                         </ul>
                 </li>
+                <?php if($_SESSION['datos']->tipo_usuario == 'Administrador'){ ?>
+                    <li class="submenu">
+                        <a href="#"><i class="fa fa-fw fa-users"></i> <span> Usuarios </span> <span class="menu-arrow"></span></a>
+                            <ul class="list-unstyled">
+                                <li><a href="usuarios.php"> Usuarios </a></li>
+                                <li><a href="tipo_usuario.php"> Tipo Usuarios </a></li>
+                            </ul>
+                    </li>
 
-                <li class="submenu">
-                    <a href="#"><i class="fa fa-fw fa-users"></i> <span> Usuarios </span> <span class="menu-arrow"></span></a>
-                        <ul class="list-unstyled">
-                            <li><a href="usuarios.php"> Usuarios </a></li>
-                            <li><a href="tipo_usuarios.php"> Tipo Usuarios </a></li>
-                        </ul>
-                </li>
-
-                <li class="submenu">
-                    <a href="#"><i class="fa fa-fw fa-file-text-o"></i> <span> Reportes </span> <span class="menu-arrow"></span></a>
-                        <ul class="list-unstyled">
-                            <li><a href="usuarios.php"> Reporte de reservas </a></li>
-                        </ul>
-                </li>
-                
-                <li class="submenu">
-                    <a href="#"><i class="fa fa-cogs"></i> <span> Seguridad </span> <span class="menu-arrow"></span></a>
-                        <ul class="list-unstyled">
-                            <li><a href="genera_venta.php">Bitacora</a></li>
-                        </ul>
-                </li>
+                    <li class="submenu">
+                        <a href="#"><i class="fa fa-fw fa-file-text-o"></i> <span> Reportes </span> <span class="menu-arrow"></span></a>
+                            <ul class="list-unstyled">
+                                <li><a href="reporte.php"> Reporte de reservas </a></li>
+                            </ul>
+                    </li>
+                    
+                    <li class="submenu">
+                        <a href="#"><i class="fa fa-cogs"></i> <span> Seguridad </span> <span class="menu-arrow"></span></a>
+                            <ul class="list-unstyled">
+                                <li><a href="bitacora.php">Bitacora</a></li>
+                            </ul>
+                    </li>
+                <?php }?>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-info-circle"></i> <span> Informacion </span> <span class="menu-arrow"></span></a>
                         <ul class="list-unstyled">
-                            <li><a href="stock.php">Acerca del Sistema</a></li>
+                            <li><a href="acerca.php">Acerca del Sistema</a></li>
                         </ul>
                 </li>
 

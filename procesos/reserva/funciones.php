@@ -14,7 +14,12 @@
         case "habitaciones":
                 habitaciones();
                 break;
-		
+        case "reservaDia":
+                reservaDia();
+                break;
+        case "finalizarReserva":
+                finalizarReserva();
+                break;			
 		default:
 			  echo "{failure:true}";
 			  break;
@@ -115,7 +120,7 @@
 
             $cards .= '
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
-                            <div class="card-box noradius noborder" style="height: 310px; background-color:'.$row['color'].'">
+                            <div class="card-box noradius noborder" style="height: 310px; border-radius: 20px; background-color:'.$row['color'].'">
                                 <div style="display:flex;">
                                     <i class="fa fa-bed  float-right"></i>
                                 </div>
@@ -130,7 +135,168 @@
                                     $cards .='
                                         <div style="text-align: center;">
                                             <button id="'.$row['id'].'" value="'.$row['estado'].'" style="background:'.$row['color'].'"
-                                            class="pill" data-toggle="modal" data-target="#exampleModalLabel" 
+                                            class="pill disponible" data-toggle="modal" data-target="#exampleModalLabel" 
+                                            type="button" >'.$row['estado'].'</button>
+                                        </div> ';
+                                }else if ($row['estado'] == "Reservada"){
+                                    $cards .='
+                                        <div style="text-align: center;">
+                                            <button id="'.$row['id'].'" value="'.$row['estado'].'" style="background:'.$row['color'].'"
+                                            class="pill reservada" data-toggle="modal" data-target="#modalReservado" 
+                                            type="button" >'.$row['estado'].'</button>
+                                        </div> ';
+                                }else{
+                                    $cards .='
+                                        <div style="text-align: center;">
+                                            <button value="'.$row['estado'].'" style="background:'.$row['color'].'"
+                                            class="pill nonreserva" type="button" >'.$row['estado'].'</button>
+                                        </div>';
+                                }
+                                        
+                            $cards .='</div>
+                        </div>
+                    ';
+        
+        }
+            
+        echo $cards;
+
+
+    }
+
+    function reservaDia(){
+
+        global $mysqli;
+        $fecha = date('d/m/Y');
+        $tabla = '';       
+
+        $sql = "SELECT h.numero, CONCAT(c.nombre,' ',c.apellido) AS cliente, 
+                DATE_FORMAT(fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
+                DATE_FORMAT(fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion 
+                FROM habitacion h 
+                LEFT JOIN reservacion r ON r.id_habitacion = h.id 
+                LEFT JOIN cliente c ON c.id = r.id_cliente
+                WHERE DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$fecha'";
+        
+        $result = $mysqli->query($sql);
+        $num = 1;
+        $tabla .= '
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Habitación</td>
+                        <td>Cliente</td>
+                        <td>Fecha Inicio</td>
+                        <td>Fecha Fin</td>
+                        
+                    </tr>
+                </thead>
+                ';
+        while($row = $result->fetch_assoc()){
+            $tabla .= '
+                    <tr>
+                        <td>'.$num.'</td>
+						<td>'.$row['numero'].'</td>
+                        <td>'.$row['cliente'].'</td>
+                        <td>'.$row['fecha_reserva'].'</td>
+                        <td>'.$row['fecha_finalizacion'].'</td>                        
+					</tr>';
+            $num++;
+        }
+
+        echo $tabla;
+
+    }
+
+    function finalizarReserva(){
+        global $mysqli;
+
+        $habitacion = $_REQUEST['habitacion'];
+        $reserva = $_REQUEST['reserva'];
+        
+        $sql1 = "update habitacion set id_estado_habitacion = 2 where id=$habitacion";
+        $mysqli->query($sql1);
+        $sql2 = "update reservacion set estatus = F where id=$reserva";
+        $mysqli->query($sql2);
+
+        echo 1;
+
+    }
+
+    function reporte(){
+        global $mysqli;
+
+        $estado = $_REQUEST['estado'];
+        $tipo = $_REQUEST['tipo'];
+
+        $fechai = $_REQUEST['fechai'];
+        $fechaf = $_REQUEST['fechaf'];
+
+        $sql = "SELECT CONCAT(c.nombre, ' ', c.apellido) as cliente, CONCAT(c.tipo_cliente, c.cedula) as cedula, 
+                h.numero, t.nombre as tipohabitacion, r.precio_total, r.tipo_reserva, 
+                DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
+                DATE_FORMAT(r.fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion
+                FROM reservacion r
+                JOIN cliente c ON c.id = r.id_cliente
+                JOIN habitacion h ON h.id = r.id_habitacion
+                JOIN tipo_habitacion t ON t.id = h.id_tipo_habitacion";
+
+
+        if($estado != 0){
+            $sql .= " AND id_estado_habitacion = $estado ";
+        }
+
+        if($tipo != 0){
+            $sql .= " AND id_tipo_habitacion = $tipo ";
+        }
+
+        if($fechai != ''){
+            $sql .= " AND DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$fechai'";
+        }
+
+        if($fechaf != ''){
+            $sql .= " AND DATE_FORMAT(fecha_finalizacion, '%d/%m/%Y') = '$fechaf'";
+        }
+
+       
+        
+
+        $result = $mysqli->query($sql);
+        $tabla .= '
+                <thead>
+                    <tr>
+                        <td>Cedula</td>
+                        <td>Cliente</td>
+                        <td>Habitacion</td>
+                        <td>Tipo</td>
+                        <td>Precio</td>
+                        <td>Tipo reserva</td>
+                        <td>Fecha Inicio</td>
+                        <td>Fecha Fin</td>
+                        
+                    </tr>
+                </thead>
+                ';
+        while($row = $result->fetch_assoc()){
+
+            $cards .= '
+                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+                            <div class="card-box noradius noborder" style="height: 310px; border-radius: 20px; background-color:'.$row['color'].'">
+                                <div style="display:flex;">
+                                    <i class="fa fa-bed  float-right"></i>
+                                </div>
+                                <div style="text-align: right;">
+                                    <h4 class="text-uppercase m-b-20">#'.$row['numero'].'</h4>
+                                    <label class="">'.$row['tipo_habitacion'].'</label><br>
+                                    <label class="text-uppercase m-b-20">$'. number_format($row['precio'], 2, ',', ' ').'</label><br>
+                                </div>
+                                ';
+                                
+                                if ($row['estado'] == "Disponible"){
+                                    $cards .='
+                                        <div style="text-align: center;">
+                                            <button id="'.$row['id'].'" value="'.$row['estado'].'" style="background:'.$row['color'].'"
+                                            class="pill disponible" data-toggle="modal" data-target="#exampleModalLabel" 
                                             type="button" >'.$row['estado'].'</button>
                                         </div> ';
                                 }else if ($row['estado'] == "Reservada"){

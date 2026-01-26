@@ -8,8 +8,8 @@ $objc = new Conexion();
 $obj = new Usuario();
 $ccn = $objc->conectar();
 
-$contraseñaa = mysqli_real_escape_string($ccn,$_POST['txtcontraseñaactual']);
-$contraseñan = mysqli_real_escape_string($ccn,$_POST['txtcontraseñanueva']);
+$contraseñaa = $_POST['txtcontraseñaactual'];
+$contraseñan = $_POST['txtcontraseñanueva'];
 
 if(empty($contraseñaa) or empty($contraseñan))
 {
@@ -17,7 +17,7 @@ if(empty($contraseñaa) or empty($contraseñan))
 }
 else {
 
-  if(sha1(md5($contraseñaa)) == $_SESSION['datos']->clave)
+  if($contraseñaa == $_SESSION['datos']->clave)
   {
     echo $obj->cambiarpass($contraseñan);
     

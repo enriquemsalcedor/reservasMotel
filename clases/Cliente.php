@@ -1,16 +1,18 @@
 <?php
+
 class Cliente{
     public function save($datos)
     {
         $c = new Conexion();
         $conexion = $c->conectar();
-        $cedula = $c->test_input($datos[0]);
-        $nombre = $c->test_input($datos[1]);
-        $apellido = $c->test_input($datos[2]);
-        $telefono = $c->test_input($datos[3]);
-        $direccion = $c->test_input($datos[4]);
-        $sql = "INSERT INTO cliente(nombre,apellido,cedula,telefono,direccion,estatus) 
-                values('$nombre','$apellido','$cedula','$telefono','$direccion','A')";
+        $tipo = $c->test_input($datos[0]);
+        $cedula = $c->test_input($datos[1]);
+        $nombre = $c->test_input($datos[2]);
+        $apellido = $c->test_input($datos[3]);
+        $telefono = $c->test_input($datos[4]);
+        $direccion = $c->test_input($datos[5]);
+        $sql = "INSERT INTO cliente(tipo_cliente,nombre,apellido,cedula,telefono,direccion,estatus) 
+                values('$tipo','$nombre','$apellido','$cedula','$telefono','$direccion','A')";
         $result = mysqli_query($conexion,$sql);
         return $result;
     }
@@ -19,15 +21,19 @@ class Cliente{
     {
         $c = new Conexion();
         $conexion = $c->conectar();
+        // $datos = array($id,$txttipocliente,$txtcedula,$txtnombre,$txtapellido,$txttelefono,$txtdireccion,$txtestatus);
         $id = $datos[0];
-        $nombre = $c->test_input($datos[0]);
-        $desc = $c->test_input($datos[1]);
-        $tipo_habitacion = $c->test_input($datos[2]);
-        $estado_habitacion = $c->test_input($datos[3]);
-        $precio = $c->test_input($datos[4]);
-        $estatus = $c->test_input($datos[5]);
-        $sql = "update habitacion set numero = '$numero', descripcion = '$desc', id_tipo_habitacion = $id_tipo_habitacion,
-        id_estado_habitacion = $estado_habitacion, precio = $precio, estatus = '$estatus' where id=$id";
+        $tipocliente = $c->test_input($datos[1]);
+        $cedula = $c->test_input($datos[2]);
+        $nombre = $c->test_input($datos[3]);
+        $apellido = $c->test_input($datos[4]);
+        $telefono = $c->test_input($datos[5]);
+        $direccion = $c->test_input($datos[6]);
+        $estatus = $c->test_input($datos[7]);
+
+        $sql = "update cliente set tipo_cliente = '$tipocliente', cedula = '$cedula', 
+                            nombre = '$nombre', apellido = '$apellido', 
+                            telefono = '$telefono', direccion = '$direccion', estatus = '$estatus' where id=$id";
         $result = mysqli_query($conexion,$sql);
         return $result;
     }
@@ -35,16 +41,20 @@ class Cliente{
     {
         $c = new Conexion();
         $conexion = $c->conectar();
-        $sql = "update habitacion set estatus = 'E' where id=$id";
+        $sql = "update cliente set estatus = 'E' where id=$id";
+        
         $result = mysqli_query($conexion,$sql);
         return $result;
     }
+
     public function mostrar()
     {
             $c = new Conexion();
 			$conexion = $c->conectar();
-			$sql = "SELECT * FROM cliente";
+			$sql = "SELECT id, CONCAT(tipo_cliente,cedula) as cedula, nombre, apellido, telefono, estatus FROM cliente WHERE estatus <> 'E'";
 			$result = mysqli_query($conexion,$sql);
+
+
             return $result; 
     }
     public function habitacionReserva()
@@ -68,20 +78,22 @@ class Cliente{
             $ver = mysqli_fetch_row($result);
             $datos = array(
                "id" =>html_entity_decode($ver[0]),
-               "nombre" =>html_entity_decode($ver[1]),
-               "apellido" =>html_entity_decode($ver[2]),
-               "telefono" =>html_entity_decode($ver[3]),
-               "direccion" =>html_entity_decode($ver[4]),
-               "estatus" =>html_entity_decode($ver[5]),
+               "tipo_cliente" =>html_entity_decode($ver[1]),
+               "cedula" =>html_entity_decode($ver[2]),
+               "nombre" =>html_entity_decode($ver[3]),
+               "apellido" =>html_entity_decode($ver[4]),
+               "telefono" =>html_entity_decode($ver[5]),
+               "direccion" =>html_entity_decode($ver[6]),
+               "estatus" =>html_entity_decode($ver[7]),
              );
             return $datos;
     }
     
-    public function buscar($cedula)
+    public function buscar($cedula,$tipo)
     {
             $c = new Conexion();
 			$conexion = $c->conectar();
-			$sql = "SELECT * FROM cliente WHERE cedula = '$cedula'";
+			$sql = "SELECT * FROM cliente WHERE cedula = '$cedula' AND tipo_cliente='$tipo'";
 			$result = mysqli_query($conexion,$sql);
             if($result->num_rows > 0){
                 $ver = mysqli_fetch_row($result);

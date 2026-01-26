@@ -10,20 +10,39 @@ if(isset($_SESSION['usuario']))
 
 
 
-<!-- Modal -->
+<!-- Modal registrar -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Registrar Estado Habitación</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Registrar Usuario</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="row">
-            <label>Nombre</label>
-            <input type="text" class="form-control" id="txtnombre" name="txtnombre">
+        <div class="row">          
+           <div class="col-lg-12">
+           <form id="frmregistrar">
+            <label>Usuario (*)</label>
+            <input type="text" class="form-control" id="txtusuario" name="txtusuario">
+            <label>Tipo Usuario (*)</label>
+            <select class="form-control" id="selecttipousuario">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/TipoUsuario.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new TipoUsuario();
+                    $result = $obj->mostrar();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <label>Clave (*)</label>
+            <input type="password" class="form-control" id="txtclave" name="txtclave">
+            </div>
+           
         </div>
       </div>
       <div class="modal-footer">
@@ -42,17 +61,42 @@ if(isset($_SESSION['usuario']))
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Editar Tipo Usuario</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-            <label>Nombre</label>
-            <input type="text" class="form-control" id="txtnombree" name="txtnombree">
+           
+           <div class="col-lg-12">
+           <form id="frmeditar">
+            <label>Usuario (*)</label>
+            <input type="text" class="form-control" id="txtusuarioe" disabled>
+            <label>Tipo Usuario (*)</label>
+            <select class="form-control" id="selecttipousuarioe">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/TipoUsuario.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new TipoUsuario();
+                    $result = $obj->mostrar();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <label>Clave (*)</label>
+            <input type="password" class="form-control" id="txtclavee" name="txtclavee">
+            <label>Tipo Usuario (*)</label>
+            <select class="form-control" id="selectestadoe">
+                <option value="A">Activo</option>
+                <option value="I">Inactivo</option>
+            </select>
+            </form>
+            </div>
+           
         </div>
-        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -74,7 +118,7 @@ if(isset($_SESSION['usuario']))
                     <div class="row">
                                 <div class="col-xl-12">
                                         <div class="breadcrumb-holder">
-                                                <h1 class="main-title float-left">Tipo Usuario</h1>
+                                                <h1 class="main-title float-left">Usuarios</h1>
                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button"  class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                                  Registrar
                                                 </button>
@@ -93,7 +137,9 @@ if(isset($_SESSION['usuario']))
                             <thead>
                                 <tr>
                                     <td>#</td>
-                                    <td>Nombre</td>
+                                    <td>Usuario</td>
+                                    <td>Tipo Usuario</td>
+                                    <td>Estatus</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -134,7 +180,7 @@ $(document).ready(function(){
     
     var table = $('#myTable').DataTable({
         "ajax":{
-            "url":"../procesos/tipousuario/mostrar.php",
+            "url":"../procesos/usuarios/mostrar.php",
             "type":"GET"
             //"crossDomain": "true",
             //"dataType": "json",
@@ -146,7 +192,15 @@ $(document).ready(function(){
             },
             {
                 
-                "data":"nombre"
+                "data":"usuario"
+            },
+            {
+                
+                "data":"tipo_usuario"
+            },
+            {
+                
+                "data":"estatus"
             },
             {
                 sTitle: "Eliminar",
@@ -187,31 +241,39 @@ $(document).on('click', '.accionesTabla', function() {
         case "Traer":
                     $.ajax({
                         method : "GET",
-                        url : "../procesos/tipousuario/traer.php",
+                        url : "../procesos/usuarios/traer.php",
                         data:'id='+id
                     }).done(function(msg) {
                         var dato=JSON.parse(msg);
-
-                        $('#txtnombree').val(dato);
+				        $('#txtusuarioe').val(dato['usuario']);
+                        $('#txtclavee').val(dato['clave']);
+                        $('#selecttipousuarioe').val(dato['id_tipo_usuario']);
+                        $('#selectestadoe').val(dato['estatus']);
                         
-       
                         $('#btneditar').unbind().click(function(){
                             
-                            noma = $("#txtnombree").val();
-                            if(noma.length != 0)
-                                {
-                             oka = {
-						                "txtnom" : noma , "id" : id,
-                                };
+                            usuario = $('#txtusuarioe').val();
+                            clave = $('#txtclavee').val();
+                            tipousuario = $('#selecttipousuarioe').val();
+                            estatus = $('#selectestadoe').val();
+                            if(usuario.length != 0 || clave.length != 0 || tipousuario.length != 0)
+                            {
+                             datos = {
+                                'id': id,
+                                'txtusuario': $('#txtcedulae').val(),
+                                'txtclave': $('#txtclavee').val(),
+                                'txttipousuario': $('#selecttipousuarioe').val(),
+                                'txtestatus': $('#selectestadoe').val(),
+                            }
                             //alert(oka);
                             //alert(JSON.stringify(oka));
                             $.ajax({
                                 method : "POST",
                                 //contentType: 'application/json; charset=utf-8',
-                                url : "../procesos/tipousuario/editar.php",
-                                data : oka
+                                url : "../procesos/usuarios/editar.php",
+                                data : datos
                                 }).done(function(msg) {
-                                alertify.success("Tipo Usuario Editado Correctamente!");
+                                alertify.success("Usuario Editado Correctamente!");
                                 table.ajax.reload();
                                 });                               
                                     
@@ -225,14 +287,14 @@ $(document).on('click', '.accionesTabla', function() {
             break;
         case "Eliminar":
             
-            alertify.confirm('Tipo Usuario', '¿Esta seguro que desea eliminar este Estado Habitación?', function()
+            alertify.confirm('Eliminar Usuario', '¿Esta seguro que desea eliminar este Habitación?', function()
                 {
                         $.ajax({
                                 type:"POST",
-                                url : "../procesos/tipousuario/eliminar.php",
+                                url : "../procesos/usuarios/eliminar.php",
                                 data : "id="+id
                             }).done(function(msg) {
-                                alertify.success("Tipo Usuario Eliminado Correctamente");
+                                alertify.success("Usuario Eliminado Correctamente");
                                 table.ajax.reload();
                             });
                 }
@@ -253,31 +315,46 @@ $(document).on('click', '.accionesTabla', function() {
     
     
     $('#btnregistrar').click(function(){
-       nom = $('#txtnombre').val();
-        if(nom.length != 0 )
-            {
-            $.ajax({
-               type:'post',
-                url:'../procesos/tipousuario/registrar.php',
-                data:'txtnombre='+nom,
-                success:function(r)
-                {
-                    
-                    if(r==1)
+       usuario = $('#txtusuario').val();
+       clave = $('#txtclave').val();
+       tipousuario = $('#selecttipousuario').val();
+        if(usuario.length != 0 || clave.length != 0 || tipousuario.length != 0){
+
+            $.get( '../procesos/funciones.php?accion=existUsuario&usuario='+usuario, function(result){
+                if(result == 0){
+                    datos = {
+                        'txtusuario': usuario,
+                        'txtclave': clave,
+                        'txttipousuario': tipousuario,
+                    }
+                    $.ajax({
+                    type:'post',
+                        url:'../procesos/usuarios/registrar.php',
+                        data:datos,
+                        success:function(r)
                         {
-                            alertify.success("Tipo Usuario Registrado Correcamente");
-                            table.ajax.reload();
+                            
+                            if(r==1)
+                                {
+                                    alertify.success("Usuario Registrado Correcamente");
+                                    table.ajax.reload();
+                                }
+                            else if(r==0)
+                                {
+                                    alertify.error("No se pudo registrar");
+                                }                                
+                            else
+                                {
+                                    alert(r);
+                                }
                         }
-                    else if(r==0)
-                        {
-                            alertify.error("No se pudo registrar");
-                        }
-                    else
-                        {
-                            alert(r);
-                        }
+                    });
+
+                }else{
+                    alertify.error("Usuario ya existe");
                 }
             });
+            
             }
         else{
             alertify.error("Complete los datos");
@@ -285,5 +362,3 @@ $(document).on('click', '.accionesTabla', function() {
     });
 });
 </script>
-
-

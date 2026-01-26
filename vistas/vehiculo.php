@@ -10,20 +10,41 @@ if(isset($_SESSION['usuario']))
 
 
 
-<!-- Modal -->
+<!-- Modal registrar -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Registrar Estado Habitación</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Registrar Vehiculo</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-            <label>Nombre</label>
-            <input type="text" class="form-control" id="txtnombre" name="txtnombre">
+           
+           <div class="col-lg-12">
+           <form id="frmregistrar">
+            <label>Cliente (*)</label>
+            <select class="form-control" id="selectcliente">
+                <option value="0">--Seleccione--</option>
+                <?php
+                    require_once '../clases/Vehiculo.php';
+                    require_once '../clases/Conexion.php';
+                    $obj = new Vehiculo();
+                    $result = $obj->clientesReserva();
+                    while($fila=mysqli_fetch_row($result)){
+                ?>
+                    <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
+                <?php }?>
+            </select>
+            <label>Placa</label>
+            <input type="text" class="form-control" id="txtplaca">
+            <label>Modelo</label>
+            <input type="hidden" class="form-control" id="txtmodelo">
+            </form>
+            </div>
+           
         </div>
       </div>
       <div class="modal-footer">
@@ -32,37 +53,7 @@ if(isset($_SESSION['usuario']))
       </div>
     </div>
   </div>
-</div>
-    
-    
-
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Editar Tipo Usuario</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <label>Nombre</label>
-            <input type="text" class="form-control" id="txtnombree" name="txtnombree">
-        </div>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="btneditar" class="btn btn-primary">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
-    
-      
+</div>     
 
     <div class="content-page">
 	
@@ -74,7 +65,7 @@ if(isset($_SESSION['usuario']))
                     <div class="row">
                                 <div class="col-xl-12">
                                         <div class="breadcrumb-holder">
-                                                <h1 class="main-title float-left">Tipo Usuario</h1>
+                                                <h1 class="main-title float-left">Vehiculos</h1>
                                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button"  class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                                  Registrar
                                                 </button>
@@ -92,9 +83,9 @@ if(isset($_SESSION['usuario']))
                         <table  id="myTable" class="table">
                             <thead>
                                 <tr>
-                                    <td>#</td>
-                                    <td>Nombre</td>
-                                    <td></td>
+                                    <td>Cliente</td>
+                                    <td>Placa</td>
+                                    <td>Modelo</td>
                                     <td></td>
                                 </tr>
                             </thead>
@@ -134,7 +125,7 @@ $(document).ready(function(){
     
     var table = $('#myTable').DataTable({
         "ajax":{
-            "url":"../procesos/tipousuario/mostrar.php",
+            "url":"../procesos/vehiculos/mostrar.php",
             "type":"GET"
             //"crossDomain": "true",
             //"dataType": "json",
@@ -142,12 +133,18 @@ $(document).ready(function(){
         },
         "columns":[
             {
-                "data":"id"
+                
+                "data":"cliente"
             },
             {
                 
-                "data":"nombre"
+                "data":"placa"
             },
+            {
+                "data":"modelo"
+            },
+            
+           
             {
                 sTitle: "Eliminar",
                 mDataProp: "id",
@@ -160,18 +157,7 @@ $(document).ready(function(){
                     return acciones
                 }
             },
-            {
-                sTitle: "Editar",
-                mDataProp: "id",
-                sWidth: '7%',
-                orderable: false,
-                render: function(data) {
-                    acciones = `<button id="` + data + `" value="Traer" class="fa fa-pencil-square-o btn btn-primary accionesTabla" data-toggle="modal" data-target="#exampleModal2" type="button"  >
-                                    
-                                </button>`;
-                    return acciones
-                }
-            }
+           
         ],
         responsive:true,
                 "ordering": false
@@ -184,55 +170,16 @@ $(document).on('click', '.accionesTabla', function() {
     var val = this.value;
 
     switch (val) {
-        case "Traer":
-                    $.ajax({
-                        method : "GET",
-                        url : "../procesos/tipousuario/traer.php",
-                        data:'id='+id
-                    }).done(function(msg) {
-                        var dato=JSON.parse(msg);
-
-                        $('#txtnombree').val(dato);
-                        
-       
-                        $('#btneditar').unbind().click(function(){
-                            
-                            noma = $("#txtnombree").val();
-                            if(noma.length != 0)
-                                {
-                             oka = {
-						                "txtnom" : noma , "id" : id,
-                                };
-                            //alert(oka);
-                            //alert(JSON.stringify(oka));
-                            $.ajax({
-                                method : "POST",
-                                //contentType: 'application/json; charset=utf-8',
-                                url : "../procesos/tipousuario/editar.php",
-                                data : oka
-                                }).done(function(msg) {
-                                alertify.success("Tipo Usuario Editado Correctamente!");
-                                table.ajax.reload();
-                                });                               
-                                    
-                                }
-                            else{
-                                alertify.error("Complete los datos");
-                            }
-
-                        });
-                    });
-            break;
         case "Eliminar":
             
-            alertify.confirm('Tipo Usuario', '¿Esta seguro que desea eliminar este Estado Habitación?', function()
+            alertify.confirm('Eliminar Vehiculo', '¿Esta seguro que desea eliminar este Vehiculo?', function()
                 {
                         $.ajax({
                                 type:"POST",
-                                url : "../procesos/tipousuario/eliminar.php",
+                                url : "../procesos/vehiculos/eliminar.php",
                                 data : "id="+id
                             }).done(function(msg) {
-                                alertify.success("Tipo Usuario Eliminado Correctamente");
+                                alertify.success("Vehiculo Eliminado Correctamente");
                                 table.ajax.reload();
                             });
                 }
@@ -253,19 +200,30 @@ $(document).on('click', '.accionesTabla', function() {
     
     
     $('#btnregistrar').click(function(){
-       nom = $('#txtnombre').val();
-        if(nom.length != 0 )
+        cliente = $('#txtnumero').val();
+        placa = $('#txtdescripcion').val();
+        modelo = $('#txtprecio').val();
+        sesion = $('#session').val();
+       
+               
+        if(cliente.length != 0 || placa.length != 0 || modelo.length != 0)
             {
+            datos = {
+                    'cliente' : cliente, 
+                    'placa': placa,
+                    'modelo': modelo, 
+                    'sesion': sesion
+                }
             $.ajax({
                type:'post',
-                url:'../procesos/tipousuario/registrar.php',
-                data:'txtnombre='+nom,
+                url:'../procesos/vehiculos/registrar.php',
+                data:datos,
                 success:function(r)
                 {
                     
                     if(r==1)
                         {
-                            alertify.success("Tipo Usuario Registrado Correcamente");
+                            alertify.success("Habitacióon Registrada Correcamente");
                             table.ajax.reload();
                         }
                     else if(r==0)
@@ -283,7 +241,15 @@ $(document).on('click', '.accionesTabla', function() {
             alertify.error("Complete los datos");
         }
     });
+
+    $('#selecttipohabitacion').on('change', function() {
+        var val = $(this).val();
+        $('#txttipohabitacion').val(val);
+    });
+
+    $('#selectestadohabitacion').on('change', function() {
+        var val = $(this).val();
+        $('#txtestadohabitacion').val(val);
+    });
 });
 </script>
-
-

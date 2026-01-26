@@ -123,38 +123,34 @@ date_default_timezone_set("America/Lima");
                         
                         <div class="row">
 
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
-                        
-                            <H4>Reservas activas</H4>
-                            <table id="dtventas" class="table table-bordered table-hover table-condensed">
-                                <thead>
-                                    <tr>
-                                        <td>#</td>
-                                        <td>Habitación</td>
-                                        <td>Cliente</td>
-                                        <td>Fecha Inicio</td>
-                                        <td>Fecha Fin</td>
-                                        <td style="width:15px"></td>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
+                            
+                                <h6>Reservas activas</h6>
+                                <table id="tblreserva" class="table table-bordered table-hover table-condensed">
+                                    
+                                    <tbody>
 
-                                <?php
-                                    //     require_once '../clases/Conexion.php';
-                                    //     require_once '../clases/Reporte.php';
-                                    //     $obj = new Reporte();
-                                    //     $result = $obj->productos_0();
-                                    // while($fila=mysqli_fetch_row($result))
-                                    {
-                                ?>
-                                    <tr>
-                                    </tr>
                                     <?php
-                                } ?>
+                                        //     require_once '../clases/Conexion.php';
+                                        //     require_once '../clases/Reporte.php';
+                                        //     $obj = new Reporte();
+                                        //     $result = $obj->productos_0();
+                                        // while($fila=mysqli_fetch_row($result))
+                                        {
+                                    ?>
+                                        <tr>
+                                        </tr>
+                                        <?php
+                                    } ?>
 
-                            </tbody>
-                        </table>
-                    </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
+                                <h6>Reservas por tipo de habitación</h6>
+                                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                            </div>
+
         </div>                   
 
     </div>
@@ -165,12 +161,62 @@ date_default_timezone_set("America/Lima");
 <?php
 require 'footer.php';
 ?>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
 <script>
 $(document).ready(function() {
+    reservaDia();
+
+    const xValues = ["Disponible", "Reservada", "Mantenimiento", ];
+    const yValues = [55, 49, 44];
+    const barColors = [
+    "#b91d47",
+    "#00aba9",
+    "#2b5797",
+    ];
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+    type: "doughnut",
+    data: {
+        labels: xValues,
+        datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+        }]
+    },
+    options: {
+        plugins: {
+        legend: {display:true},
+        title: {
+            display: true,
+            text: "Tipo habitación",
+            font: {size:16}
+        }
+        }
+    }
+    });
 			
 
-} );		
+} );	
+
+function reservaDia(){
+        datos = {
+                    'accion': 'reservaDia'
+                }
+
+        $.ajax({
+            method : "GET",
+            url : "../procesos/reserva/funciones.php",
+            data: datos
+        }).done(function(msg) {
+            $("#tblreserva").empty();
+            $("#tblreserva").append(msg);
+            
+
+        });
+
+    }
 </script>
 	
 	
