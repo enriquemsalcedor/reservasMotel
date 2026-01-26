@@ -49,11 +49,11 @@ date_default_timezone_set("America/Caracas");
                         </div>
                         <div class="col-xs-12 col-md-12 col-lg-6 col-xl-3">
                             <label for="">Fecha de reserva:</label>
-                            <input type="date"  class="form-control"id="fechar">
+                            <input type="date"  class="form-control"id="txtfechai">
                         </div>
                         <div class="col-xs-12 col-md-12 col-lg-6 col-xl-3">
                             <label for="">Fecha Finalizacion:</label>
-                            <input type="date" class="form-control" id="fechaf">
+                            <input type="date" class="form-control" id="txtfechaf">
                         </div>                        
                         
                     </div>
@@ -65,11 +65,10 @@ date_default_timezone_set("America/Caracas");
                     </div>
                     
                     <!-- end row -->
-                    <div class="row" id="list">
-                    
-                        
-                        
-                    </div>                      
+                     <table id="list" class="table table-bordered table-hover table-condensed">
+
+                     </table>
+                                         
 
         </div>
         <!-- END container-fluid -->
@@ -88,31 +87,24 @@ require 'footer.php';
 
 <script>
 $(document).ready(function() {
-    
-
-
-
-    
 
     $(document).on('click', '#btnfiltrar', function() {
         console.log('--->')
-        alertify.error("Ha ocurrido un error inesperado!");
+        list()
         
-
     });
 
-
-    function listHabitaciones(){
+    function list(){
         datos = {
                     'estado' : $('#selectestadohabitacion').val(), 
                     'tipo'   : $('#selecttipohabitacion').val(),
-                    'fechai' : $('#fechai').val(),
-                    'fechaf' : $('#fechaf').val(),
+                    'fechai' : $('#txtfechai').val(),
+                    'fechaf' : $('#txtfechaf').val(),
                     'accion' : 'reporte'
                 }
 
         $.ajax({
-            method : "GET",
+            method : "POST",
             url : "../procesos/reserva/funciones.php",
             data: datos
         }).done(function(msg) {

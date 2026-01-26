@@ -19,7 +19,10 @@
                 break;
         case "finalizarReserva":
                 finalizarReserva();
-                break;			
+                break;	
+        case "reporte":
+            reporte();
+            break;
 		default:
 			  echo "{failure:true}";
 			  break;
@@ -258,10 +261,10 @@
             $sql .= " AND DATE_FORMAT(fecha_finalizacion, '%d/%m/%Y') = '$fechaf'";
         }
 
-       
-        
+             
 
         $result = $mysqli->query($sql);
+        $tabla = '';
         $tabla .= '
                 <thead>
                     <tr>
@@ -279,48 +282,23 @@
                 ';
         while($row = $result->fetch_assoc()){
 
-            $cards .= '
-                        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
-                            <div class="card-box noradius noborder" style="height: 310px; border-radius: 20px; background-color:'.$row['color'].'">
-                                <div style="display:flex;">
-                                    <i class="fa fa-bed  float-right"></i>
-                                </div>
-                                <div style="text-align: right;">
-                                    <h4 class="text-uppercase m-b-20">#'.$row['numero'].'</h4>
-                                    <label class="">'.$row['tipo_habitacion'].'</label><br>
-                                    <label class="text-uppercase m-b-20">$'. number_format($row['precio'], 2, ',', ' ').'</label><br>
-                                </div>
-                                ';
-                                
-                                if ($row['estado'] == "Disponible"){
-                                    $cards .='
-                                        <div style="text-align: center;">
-                                            <button id="'.$row['id'].'" value="'.$row['estado'].'" style="background:'.$row['color'].'"
-                                            class="pill disponible" data-toggle="modal" data-target="#exampleModalLabel" 
-                                            type="button" >'.$row['estado'].'</button>
-                                        </div> ';
-                                }else if ($row['estado'] == "Reservada"){
-                                    $cards .='
-                                        <div style="text-align: center;">
-                                            <button id="'.$row['id'].'" value="'.$row['estado'].'" style="background:'.$row['color'].'"
-                                            class="pill reservada" data-toggle="modal" data-target="#modalReservado" 
-                                            type="button" >'.$row['estado'].'</button>
-                                        </div> ';
-                                }else{
-                                    $cards .='
-                                        <div style="text-align: center;">
-                                            <button value="'.$row['estado'].'" style="background:'.$row['color'].'"
-                                            class="pill nonreserva" type="button" >'.$row['estado'].'</button>
-                                        </div>';
-                                }
-                                        
-                            $cards .='</div>
-                        </div>
+            $tabla .= '
+                    <tr>
+                        <td>'.$row['cedula'].'</td>
+                        <td>'.$row['cliente'].'</td>
+                        <td>'.$row['numero'].'</td>
+                        <td>'.$row['tipohabitacion'].'</td>
+                        <td>'.$row['precio_total'].'</td>
+                        <td>'.$row['tipo_reserva'].'</td>
+                        <td>'.$row['fecha_reserva'].'</td>
+                        <td>'.$row['fecha_finalizacion'].'</td>
+                    </tr>
+                        
                     ';
         
         }
             
-        echo $cards;
+        echo $tabla;
 
 
     }
