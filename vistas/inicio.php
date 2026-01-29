@@ -165,14 +165,20 @@ require 'footer.php';
 <script>
 $(document).ready(function() {
     reservaDia();
+    estados();
 
-    const xValues = ["Disponible", "Reservada", "Mantenimiento", ];
+    var lx = [];
+    var ly = [];
+    var color = [];
+
+    const xValues = ["Reservada", "Disponible", "Mantenimiento", ];
     const yValues = [55, 49, 44];
     const barColors = [
     "#b91d47",
     "#00aba9",
     "#2b5797",
     ];
+    
 
     const ctx = document.getElementById('myChart');
 
@@ -217,6 +223,37 @@ function reservaDia(){
         });
 
     }
+
+    
+    function estados(){
+        
+        datos = {
+                    'accion': 'reporteEstados'
+                }
+
+        $.ajax({
+            method : "GET",
+            url : "../procesos/funciones.php",
+            data: datos
+        }).done(function(data) {
+            
+            console.log(data)
+            var arr = JSON.parse(data);
+            $.each(JSON.parse(data), function(i, item) {
+                console.log(item.color);
+                lx.push(item.name);
+                ly.push(parseInt(item.y));
+                color.push(item.color);
+            });
+            console.log(lx)
+            console.log(ly)
+
+        });
+
+    }
+
+
+
 </script>
 	
 	

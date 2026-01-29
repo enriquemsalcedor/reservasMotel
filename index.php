@@ -40,9 +40,10 @@
                 <label for="inputEmail">Usuario</label>
               </div>
 
-              <div class="form-label-group">
-                <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
-                <label for="inputPassword">Clave</label>
+              <div class="form-label-group position-relative">
+                  <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
+                  <label for="inputPassword">Clave</label>
+                  <i class="far fa-eye" id="togglePassword" style="position: absolute; right: 15px; top: 15px; cursor: pointer; z-index: 10;"></i>
               </div>
 
               
@@ -63,6 +64,23 @@
 <script>
     
     $(document).ready(function(){
+
+        $('#togglePassword').click(function() {
+        const input = $('#inputPassword');
+        const icon = $(this);
+
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            // Cambiamos el icono a ojo tachado
+            icon.removeClass('far fa-eye').addClass('fas fa-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            // Volvemos al icono original
+            icon.removeClass('fas fa-eye-slash').addClass('far fa-eye');
+        }
+    });
+
+    
         $('#btningresar').click(function(){
             datos = $('#frmlogin').serialize();
             var usu = $('#inputEmail').val();

@@ -17,9 +17,8 @@ class Habitacion{
         $result = mysqli_query($conexion,$sql);
 
         if($result == true){
-            $id = $mysqli->insert_id;
             $usuario = $_SESSION['usuario'];
-            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la habitacion #$id','Habitacion',Now())";
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la habitacion #$numero','Habitacion',Now())";
             mysqli_query($conexion,$sqlx);
         }
         return $result;
@@ -48,7 +47,7 @@ class Habitacion{
         $result = mysqli_query($conexion,$sql);
         if($result == true){
             $usuario = $_SESSION['usuario'];
-            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito la habitacion #$id','Cliente',Now())";
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito la habitacion #$numero','Cliente',Now())";
             mysqli_query($conexion,$sqlx);
         }
         return $result;

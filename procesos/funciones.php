@@ -21,6 +21,9 @@
         case "aggrespaldos":
                 aggrespaldos();
                 break;
+        case "reporteEstados":
+                reporteEstados();
+                break;
 		default:
 			  echo "{failure:true}";
 			  break;
@@ -90,6 +93,41 @@
             echo 0;
         }  
         
+    }
+
+    function reporteEstados(){
+        global $mysqli;
+        $sql = "
+            SELECT 'Reservada' as name, count(r.id_habitacion) as y, e.color
+            FROM reservacion r 
+            LEFT JOIN habitacion h ON h.id = r.id_habitacion
+            LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
+            WHERE h.id_estado_habitacion = 1
+            UNION
+            SELECT 'Disponible' as name, count(r.id_habitacion) as y, e.color
+            FROM reservacion r 
+            LEFT JOIN habitacion h ON h.id = r.id_habitacion 
+            LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
+            WHERE h.id_estado_habitacion = 2
+            UNION
+            SELECT 'Mantenimiento' as name, count(r.id_habitacion) as y, e.color
+            FROM reservacion r 
+            LEFT JOIN habitacion h ON h.id = r.id_habitacion
+            LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
+            WHERE h.id_estado_habitacion = 4
+            
+            ";
+        $result = $mysqli->query($sql);
+        while($row = $result->fetch_assoc()){
+			$registros[] 	= array(
+				'name' 	=> $row['name'],
+				'y' 	=> $row['y'],
+                'color' => $row['color']
+			);
+		}
+
+        echo json_encode($registros);
+
     }
 
 

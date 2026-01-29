@@ -9,9 +9,8 @@ class TipoHabitacion{
         $sql = "INSERT INTO tipo_habitacion(nombre,estatus) values('$nombre','A')";
         $result = mysqli_query($conexion,$sql);
         if($result == true){
-            $id = $mysqli->insert_id;
             $usuario = $_SESSION['usuario'];
-            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el tipo habitacion #$id','Estado habitacion',Now())";
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el tipo habitacion $nombre','Estado habitacion',Now())";
             mysqli_query($conexion,$sqlx);
         }
         return $result;
@@ -25,7 +24,7 @@ class TipoHabitacion{
         $result = mysqli_query($conexion,$sql);
         if($result == true){
             $usuario = $_SESSION['usuario'];
-            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito el tipo habitacion #$id','Estado habitacion',Now())";
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito el tipo habitacion $nombre','Estado habitacion',Now())";
             mysqli_query($conexion,$sqlx);
         }
         return $result;

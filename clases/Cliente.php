@@ -16,9 +16,8 @@ class Cliente{
         $result = mysqli_query($conexion,$sql);
         
         if($result == true){
-            $id = $mysqli->insert_id;
             $usuario = $_SESSION['usuario'];
-            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el cliente #$id','Cliente',Now())";
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el cliente $tipo$cedula','Cliente',Now())";
             mysqli_query($conexion,$sqlx);
         }
         return $result;
@@ -45,7 +44,7 @@ class Cliente{
         if($result == true){
            
             $usuario = $_SESSION['usuario'];
-            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito el cliente#$id','Cliente',Now())";
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito el cliente $tipo$cedula','Cliente',Now())";
             mysqli_query($conexion,$sqlx);
         }
         return $result;
