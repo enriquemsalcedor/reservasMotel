@@ -1,4 +1,5 @@
 <?php
+session_start();
 class Usuario{
     
 		public function login($datos)
@@ -10,17 +11,23 @@ class Usuario{
 			$usuario = mysqli_real_escape_string($conexion,$datos[0]);
 			$sql = "select u.*, t.nombre as tipo_usuario from usuario u
 					JOIN tipo_usuario t ON t.id = u.id_tipo_usuario
-					where u.usuario='$usuario' and u.clave='$password'";
+					where u.usuario='$usuario' and u.clave='$password' and u.estatus <> 'E'" ;
 			$result = mysqli_query($conexion,$sql);
 
 			if(mysqli_num_rows($result) > 0)
 			{
-                $_SESSION['usuario'] = $datos[0];
-                $_SESSION['datos'] = $result->fetch_object();
-				$usuario = $_SESSION['usuario'];
 				
-				return 1;
-			}
+				$_SESSION['usuario'] = $datos[0];
+				$_SESSION['datos'] = $result->fetch_object();
+				$usuario = $_SESSION['usuario'];
+				if($_SESSION['datos']->estatus == 'I' ){
+					
+					return -1;
+				}else{
+					
+					return 1;
+				}
+			}   
 			else
 			{
 				return 0;

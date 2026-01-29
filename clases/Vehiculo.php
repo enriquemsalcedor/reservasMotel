@@ -8,7 +8,7 @@ class Vehiculo{
         $placa = $c->test_input($datos[1]);
         $modelo = $c->test_input($datos[2]);
         
-        $sql = "INSERT INTO vehiculo(id_cliente,placa,modelo,fecha,estatus) 
+        $sql = "INSERT INTO vehiculo(idcliente,placa,modelo,fecha,estatus) 
                 values($idcliente,'$placa','$modelo',Now(),'A')";
         $result = mysqli_query($conexion,$sql);
         return $result;

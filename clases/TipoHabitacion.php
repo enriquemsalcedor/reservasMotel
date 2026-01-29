@@ -1,4 +1,5 @@
 <?php
+session_start();
 class TipoHabitacion{
     public function save($nombrer)
     {
@@ -7,6 +8,12 @@ class TipoHabitacion{
         $nombre = $c->test_input($nombrer);
         $sql = "INSERT INTO tipo_habitacion(nombre,estatus) values('$nombre','A')";
         $result = mysqli_query($conexion,$sql);
+        if($result == true){
+            $id = $mysqli->insert_id;
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el tipo habitacion #$id','Estado habitacion',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
         public function edit($datos)
@@ -16,6 +23,11 @@ class TipoHabitacion{
         $nombre = $c->test_input($datos[1]);
         $sql = "update tipo_habitacion set nombre = '$nombre' where id=$datos[0]";
         $result = mysqli_query($conexion,$sql);
+        if($result == true){
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito el tipo habitacion #$id','Estado habitacion',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
         public function delete($id)
@@ -24,6 +36,11 @@ class TipoHabitacion{
         $conexion = $c->conectar();
         $sql = "update tipo_habitacion set estatus = 'E' where id=$id";
         $result = mysqli_query($conexion,$sql);
+        if($result == true){
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se elimino el tipo habitacion #$id','Estado habitacion',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
     public function mostrar()

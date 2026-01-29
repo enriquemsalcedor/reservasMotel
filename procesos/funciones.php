@@ -6,6 +6,7 @@
 	if (isset($_REQUEST['accion'])) {
 		$accion = $_REQUEST['accion'];   
 	}
+    session_start();
 	
 	switch($accion){
 		case "existUsuario": 
@@ -14,6 +15,12 @@
         case "existCliente":
                 existCliente();
                 break;	
+        case "respaldos":
+                respaldos();
+                break;
+        case "aggrespaldos":
+                aggrespaldos();
+                break;
 		default:
 			  echo "{failure:true}";
 			  break;
@@ -39,6 +46,48 @@
 		echo $result->num_rows;
         
     }
+
+    function respaldos(){
+        global $mysqli;
+
+       	$sql = "select * from respaldo order by id desc";
+		
+        $tabla .= '
+                <thead>
+                    <tr>
+                        <td>Usuario</td>
+                        <td>Fecha</td>
+                        
+                    </tr>
+                </thead>
+                ';
+        while($row = $result->fetch_assoc()){
+
+            $tabla .= '
+                    <tr>
+                        <td>'.$row['usuario'].'</td>
+                        <td>'.$row['fecha'].'</td>
+                        
+                    </tr>
+                        
+                    ';
+        
+        }
+            
+        echo $tabla;
+        
+    }
+
+    function aggrespaldos(){
+
+       	global $mysqli;
+        $usuario = $_SESSION['usuario'];
+        $sql = "INSERT INTO respaldo (usuario, fecha) VALUES ('$usuario', NOW())";
+        mysqli->query($sql);
+            echo 1;        
+        
+    }
+
 
 
     

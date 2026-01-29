@@ -274,6 +274,7 @@ $(document).on('click', '.accionesTabla', function() {
                         {
                             alert(r);
                         }
+                    $('#txtnombre').val('');
                 }
             });
             }

@@ -39,7 +39,7 @@ date_default_timezone_set("America/Caracas");
                                 <option value="J">J</option>
                                 <option value="G">G</option>
                             </select>
-                            <input type="text" class="form-control" id="txtcedula" name="txtcedula">
+                            <input type="text" class="form-control" id="txtcedula" name="txtcedula" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="10">
                             <input type="hidden" class="form-control" id="txtid" >
                             <button id="search" class="btn btn-primary mr-1 ml-1 border-radius: 25px;"><i class="fa fa-fw fa-search"></i> <span> </span></button>
                         </div>
@@ -57,7 +57,7 @@ date_default_timezone_set("America/Caracas");
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                         <label id="">Teléfono de cliente: </label>
-                        <input type="text" class="form-control" id="txttelefono" name="txttelefono">
+                        <input type="text" class="form-control" id="txttelefono" name="txttelefono" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                     </div>
 
                 </div>
@@ -136,7 +136,7 @@ date_default_timezone_set("America/Caracas");
                         <label id="lbltotal"> </label>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
-                        <label id="lbltipo">Descripción: </label>
+                        <label id="lbltipo">Cliente: </label>
                         <p id="descrip2"></p>
                         <div style="">
                             <label id="lblfechai">Fecha: </label>
@@ -147,7 +147,30 @@ date_default_timezone_set("America/Caracas");
                     </div>
                 </div>
                 <hr>
+                <h5>Agregar acompañantes</h5>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
+                        <label id="">Nombre: </label>
+                        <input type="text" class="form-control" id="txtnombacomp" >
+                        <label id="">Apellido: </label>
+                        <input type="text" class="form-control" id="txtapeacomp">
+                        <label id="">Telefono: </label>
+                        <input type="text" class="form-control" id="txttlfacomp" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        <br>
+                        <button type="button" class="btn btn-primary" id="btnAddAcomp">Agregar</button>
+                        
+                        
+                    </div>
+                    <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
+                        <table id="tblacomp" class="table table-bordered table-hover table-condensed">
+                            
+
+                        </table>
+                    </div>
+                </div>
             </div>
+            
+            
             
 
             <div class="modal-footer">
@@ -235,6 +258,8 @@ require 'footer.php';
 
 <script>
 $(document).ready(function() {
+    var reserva;
+    var maxpersona;
     listHabitaciones();
 
     $('#txtnombre').prop('disabled', true);
@@ -281,6 +306,7 @@ $(document).ready(function() {
             $('#txtsubtotal').val(subtotal);
             $('#txttotaliva').val(ivatotal);
             $('#txttotal').val(total);
+
 
         });
 
@@ -346,6 +372,7 @@ $(document).ready(function() {
     $(document).on('click', '.reservada', function() {
         var val = this.value;
         var id = this.id;
+        reserva = id;
 
         $.ajax({
             method : "GET",
@@ -356,12 +383,16 @@ $(document).ready(function() {
 
             $('#lblnumero2').html('Habitación: #'+dato['numero']);
             $('#lbltipo2').html('Tipo Habitación: '+dato['tipo_habitacion']);
-            $('#descrip2').html(dato['descripcion']) 
+            $('#descrip2').html(dato['cedula']+' '+dato['cliente']) 
             $('#lblfechai').html('Fecha reserva: '+dato['fecha_reserva']) 
             $('#lblfechaf').html(' - Fecha finalizacion: '+dato['fecha_finalizacion']) 
             $('#lbltotal').html('$'+dato['total']) 
             $('#reserva').val(dato['reserva']) 
             $('#habitacion').val(dato['id'])
+
+            maxpersona = dato['maxpersona'];
+
+            listAcomp();
         
         });
     });
@@ -505,11 +536,183 @@ $(document).ready(function() {
         
 
     }
+
+     $(document).on('click', '#btnregistrar', function() {
+        console.log('--->')
+        
+        var id_cliente = $("#txtid").val();
+        var cedula = $("#txtcedula").val();
+        var nombre = $("#txtnombre").val();
+        var apellido = $("#txtapellido").val();
+        var telefono = $("#txttelefono").val();
+        var direccion = $("#txtdireccion").val();
+        var tipo_reserva = $("#selecttipo").val();
+        var horas = 0;
+        if($("#txthoras").val() != '') {
+            horas = $("#txthoras").val();
+        }
+        var fechai = $("#txtfechai").val();
+        var fechac = $("#txtfechac").val();
+        var total = $("#txttotal").val();
+
+
+        if(exist_cliente == true){
+
+            if(id_cliente != '' || tipo_reserva != '' || fechai != '' || fechac != '' || total != ''){
+                datos = {
+                    'id_habitacion' : id_habitacion, 'id_cliente': id_cliente, 'tipo_reserva': tipo_reserva, 'horas': horas, 
+                    'fechai': fechai, 'fechac': fechac, 'total': total, 'accion': 'save'
+                }
+                console.log(datos);
+                $.ajax({
+                    method : "POST",
+                    url : "../procesos/reserva/funciones.php",
+                    data: datos
+                }).done(function(msg) {
+                    listHabitaciones();
+                    $('#exampleModalLabel').modal('hide');
+
+                });
+            }else{
+                alertify.error("Debes llenar los datos");
+
+            }
+        }else{
+
+            if(id_cliente != '' || tipo_reserva != '' || fechai != '' || fechac != '' || total != '' ||
+                nombre != '' || apellido != '' || telefono != '' || direccion != '' || cedula != ''
+            ){
+                datos = {
+                    'id_habitacion' : id_habitacion, 'id_cliente': id_cliente, 'tipo_reserva': tipo_reserva, 'horas': horas, 
+                    'fechai': fechai, 'fechac': fechac, 'total': total, 
+                    'nombre': nombre, 'apellido': apellido, 'telefono': telefono, 'direccion': direccion, 'cedula': cedula,
+                    'accion': 'save'
+                }
+                console.log(datos);
+                $.ajax({
+                    method : "POST",
+                    url : "../procesos/reserva/funciones.php",
+                    data: datos
+                }).done(function(msg) {
+                    listHabitaciones();
+                    $('#exampleModalLabel').modal('hide');
+                });
+            }else{
+                alertify.error("Debes llenar los datos");
+
+            }
+
+        }
+
+        limpiar();
+
+    });
+
+    function limpiar(){
+        $("#txtcedula").val('');
+        $("#txtnombre").val('');
+        $("#txtapellido").val('');
+        $("#txttelefono").val('');
+        $("#txtdireccion").val('');
+        $("#selecttipo").val('');
+        $("#txthoras").val('');
+        $("#txtfechai").val('');
+        $("#txtfechac").val('');
+        $("#txttotal").val('');
+    }
+
+    function listAcomp(){
+        datos = {
+                    'reserva' : reserva, 
+                    'accion': 'acompa'
+                }
+
+        $.ajax({
+            method : "GET",
+            url : "../procesos/reserva/funciones.php",
+            data: datos
+        }).done(function(msg) {
+            $("#tblacomp").empty();
+            $("#tblacomp").append(msg);
+            
+
+        });
+
+    }
+        
+    $(document).on("click", "#btnAddAcomp", addAcomp);
+
+
+    function addAcomp(){
+        var nombre = $('#txtnombacomp').val();
+        var apellido = $('#txtapeacomp').val();
+        var telefono = $('#txttlfacomp').val();
+           
+        if(nombre != '' || apellido != '' || telefono != ''){
+            datos = {
+                    'reserva' : reserva,
+                    'nombre': nombre,
+                    'apellido': apellido,
+                    'telefono': telefono,
+                    'limit' : maxpersona,
+                    'accion': 'addAcomp'
+                }
+
+            $.ajax({
+                method : "GET",
+                url : "../procesos/reserva/funciones.php",
+                data: datos
+            }).done(function(msg) {
+
+                if(msg == 1){
+                    listAcomp();
+                    alertify.success("Acompañante agregado!");
+                }else if(msg == 0){
+                    alertify.error("Has llegado al limite de acompañantes!");
+                }else{
+                    alertify.error("Error!");
+                }
+                
+                $('#txtnombacomp').val('');
+                $('#txtapeacomp').val('');
+                $('#txttlfacomp').val('');
+            });
+
+        }else{
+            alertify.error("Complete los datos!");
+        }
+        
+
+    }
+
+    $(document).on('click', '.deleteAcomp', function() {
+        var id = this.id;
+        reserva = id;
+
+        alertify.confirm('Eliminar Acompañante', '¿Esta seguro que desea eliminar este Acompañante?', function()
+                {
+                    $.ajax({
+                        method : "GET",
+                        url : "../procesos/reserva/funciones.php?accion=deleteAcomp",
+                        data:'id='+id
+                    }).done(function(msg) {
+                        
+
+                        listAcomp();
+                    
+                    });
+                }
+                , function(){
+                
+                });
+        
+    });
     
 
 			
 
-});		
+});
+
 </script>
 	
 	

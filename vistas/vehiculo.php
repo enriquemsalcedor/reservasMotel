@@ -41,7 +41,7 @@ if(isset($_SESSION['usuario']))
             <label>Placa</label>
             <input type="text" class="form-control" id="txtplaca">
             <label>Modelo</label>
-            <input type="hidden" class="form-control" id="txtmodelo">
+            <input type="text" class="form-control" id="txtmodelo">
             </form>
             </div>
            
@@ -200,9 +200,9 @@ $(document).on('click', '.accionesTabla', function() {
     
     
     $('#btnregistrar').click(function(){
-        cliente = $('#txtnumero').val();
-        placa = $('#txtdescripcion').val();
-        modelo = $('#txtprecio').val();
+        cliente = $('#selectcliente').val();
+        placa = $('#txtplaca').val();
+        modelo = $('#txtmodelo').val();
         sesion = $('#session').val();
        
                
@@ -234,6 +234,9 @@ $(document).on('click', '.accionesTabla', function() {
                         {
                             alert(r);
                         }
+                    $('#txtplaca').val('');
+                    $('#txtmodelo').val('');
+                    $('#selectcliente').val('');
                 }
             });
             }

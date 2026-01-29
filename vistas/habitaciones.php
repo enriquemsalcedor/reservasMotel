@@ -58,9 +58,11 @@ if(isset($_SESSION['usuario']))
             </select>
             <input type="hidden" class="form-control" id="txtestadohabitacion">
             <label>Precio 24 horas</label>
-            <input type="text" class="form-control" id="txtprecio" name="txtprecio">
+            <input type="text" class="form-control" id="txtprecio" name="txtprecio" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
             <label>Precio 1 hora</label>
-            <input type="text" class="form-control" id="txtpreciohora" name="txtpreciohora">
+            <input type="text" class="form-control" id="txtpreciohora" name="txtpreciohora" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+            <label>Maximo de personas</label>
+            <input type="number" class="form-control" id="txtmaxpersona" name="txtmaxpersona" value='1'>
              </form>
             </div>
            
@@ -124,15 +126,17 @@ if(isset($_SESSION['usuario']))
             </select>
             <input type="hidden" class="form-control" id="txtestadohabitacione">
             <label>Precio 24 horas</label>
-            <input type="text" class="form-control" id="txtprecioe" name="txtprecio">
+            <input type="text" class="form-control" id="txtprecioe" name="txtprecio" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
             <label>Precio 1 hora</label>
-            <input type="text" class="form-control" id="txtpreciohorae" name="txtpreciohora">
+            <input type="text" class="form-control" id="txtpreciohorae" name="txtpreciohora" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+            <label>Maximo de personas</label>
+            <input type="number" class="form-control" id="txtmaxpersonae" name="txtmaxpersonae">
             <label>Estatus</label>
             <select class="form-control" id="selectestatuse">
                 <option value="A">Activo</option>
                 <option value="I">Inctivo</option>
             </select>
-            <input type="hidden" class="form-control" id="txtestatuse" name="txtpreciohora">
+            <input type="hidden" class="form-control" id="txtestatuse" >
         </div>
            
         </div>
@@ -179,7 +183,8 @@ if(isset($_SESSION['usuario']))
                                     <td>Numero</td>
                                     <td>Estado</td>
                                     <td>Tipo Habitación</td>
-                                    <td>Precio</td>
+                                    <td>Precio/dia</td>
+                                    <td>Precio/hora</td>
                                     <td>Estatus</td>
                                     <td></td>
                                     <td></td>
@@ -246,6 +251,10 @@ $(document).ready(function(){
                 
                 "data":"precio"
             },
+             {
+                
+                "data":"precio_hora"
+            },
             {
                 
                 "data":"estatus"
@@ -296,16 +305,13 @@ $(document).on('click', '.accionesTabla', function() {
 				        $('#txtnumeroe').val(dato['numero']);
                         $('#txtdescripcione').val(dato['descripcion']);
                         $('#txtprecioe').val(dato['precio']);
-                        $('#txtestadohabitacione').val(dato['id_estado_habitacion']);
                         $('#selectestadohabitacione').val(dato['id_estado_habitacion']);
-                        $('#txttipohabitacione').val(dato['id_tipo_habitacion']);
                         $('#selecttipohabitacione').val(dato['id_tipo_habitacion']);
                         $('#txtpreciohorae').val(dato['precio_hora']);
-                        $('#txtestatuse').val(dato['estatus']);
                         $('#selectestatuse').val(dato['estatus']);
-                        
-                        $('#btneditar').unbind().click(function(){
-                            
+                        $('#txtmaxpersonae').val(dato['maxpersona']);
+
+                        $('#btneditar').unbind().click(function(){                         
                             numero = $('#txtnumeroe').val();
                             desc = $('#txtdescripcione').val();
                             precio = $('#txtprecioe').val();
@@ -318,13 +324,15 @@ $(document).on('click', '.accionesTabla', function() {
                             )
                                 {
                                 datos = {
+                                        'id' : id,
                                         'txtnumero' : $('#txtnumeroe').val(), 
                                         'txtdescripcion': $('#txtdescripcione').val(),
                                         'txtprecio': $('#txtprecioe').val(), 
                                         'txtpreciohora': $('#txtpreciohorae').val(),
-                                        'txtestadohabitacion': $('#txtestadohabitacione').val(),
-                                        'txttipohabitacion': $('#txttipohabitacione').val(), 
-                                        'txtestatus': $('#txtestatuse').val(), 
+                                        'txtestadohabitacion': $('#selectestadohabitacione').val(),
+                                        'txttipohabitacion': $('#selecttipohabitacione').val(), 
+                                        'txtestatus': $('#selectestatuse').val(), 
+                                        'txtmaxpersona' : $('#txtmaxpersonae').val(),
                                     }
                             
                             $.ajax({
@@ -393,6 +401,7 @@ $(document).on('click', '.accionesTabla', function() {
                     'txtpreciohora': $('#txtpreciohora').val(),
                     'txtestadohabitacion': $('#txtestadohabitacion').val(),
                     'txttipohabitacion': $('#txttipohabitacion').val(), 
+                    'txtmaxpersona' : $('#txtmaxpersona').val(),
                 }
 
             $.ajax({
@@ -415,6 +424,7 @@ $(document).on('click', '.accionesTabla', function() {
                         {
                             alert(r);
                         }
+                    limpiar();
                 }
             });
             }
@@ -432,5 +442,15 @@ $(document).on('click', '.accionesTabla', function() {
         var val = $(this).val();
         $('#txtestadohabitacion').val(val);
     });
+
+    function limpiar(){
+        $('#txtnumero').val('');
+        $('#txtdescripcion').val('');
+        $('#txtprecio').val(''); 
+        $('#txtpreciohora').val('');
+        $('#txtestadohabitacion').val('');
+        $('#txttipohabitacion').val(''); 
+        $('#txtmaxpersona').val('');
+    }
 });
 </script>

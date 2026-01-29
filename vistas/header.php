@@ -166,6 +166,7 @@ if(isset($_SESSION['usuario']))
                         <a href="#"><i class="fa fa-fw fa-file-text-o"></i> <span> Reportes </span> <span class="menu-arrow"></span></a>
                             <ul class="list-unstyled">
                                 <li><a href="reporte.php"> Reporte de reservas </a></li>
+                                <li><a href="reporte_clientes.php"> Reporte de clientes </a></li>
                             </ul>
                     </li>
                     
@@ -173,6 +174,7 @@ if(isset($_SESSION['usuario']))
                         <a href="#"><i class="fa fa-cogs"></i> <span> Seguridad </span> <span class="menu-arrow"></span></a>
                             <ul class="list-unstyled">
                                 <li><a href="bitacora.php">Bitacora</a></li>
+                                <li><a href="respaldo.php">Respaldo de BD</a></li>
                             </ul>
                     </li>
                 <?php }?>

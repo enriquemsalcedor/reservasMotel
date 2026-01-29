@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 class Cliente{
     public function save($datos)
     {
@@ -14,6 +14,13 @@ class Cliente{
         $sql = "INSERT INTO cliente(tipo_cliente,nombre,apellido,cedula,telefono,direccion,estatus) 
                 values('$tipo','$nombre','$apellido','$cedula','$telefono','$direccion','A')";
         $result = mysqli_query($conexion,$sql);
+        
+        if($result == true){
+            $id = $mysqli->insert_id;
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el cliente #$id','Cliente',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
     
@@ -35,6 +42,12 @@ class Cliente{
                             nombre = '$nombre', apellido = '$apellido', 
                             telefono = '$telefono', direccion = '$direccion', estatus = '$estatus' where id=$id";
         $result = mysqli_query($conexion,$sql);
+        if($result == true){
+           
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito el cliente#$id','Cliente',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
     public function delete($id)
@@ -44,6 +57,11 @@ class Cliente{
         $sql = "update cliente set estatus = 'E' where id=$id";
         
         $result = mysqli_query($conexion,$sql);
+        if($result == true){
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se elimino el cliente #$id','Cliente',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
 
@@ -96,6 +114,7 @@ class Cliente{
 			$sql = "SELECT * FROM cliente WHERE cedula = '$cedula' AND tipo_cliente='$tipo'";
 			$result = mysqli_query($conexion,$sql);
             if($result->num_rows > 0){
+                               
                 $ver = mysqli_fetch_row($result);
                 $datos = array(
                 "id" =>html_entity_decode($ver[0]),
@@ -105,6 +124,9 @@ class Cliente{
                 "telefono" =>html_entity_decode($ver[4]),
                 "direccion" =>html_entity_decode($ver[5]),
                 );
+                $usuario = $_SESSION['usuario'];
+                $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se consulto cedula del cliente #$ver[0]','Cliente',Now())";
+                mysqli_query($conexion,$sqlx);
             }else{
                 $datos = 0;
             }

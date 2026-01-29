@@ -88,6 +88,9 @@
                     else if(r==0){
                             alertify.error("Error al ingresar los datos");
                         }
+                    else if(r==-1){
+                            alertify.error("Usuario inactivo, comuniquese con el administrador.!");
+                        }
                     else
                         {
                             //alertify.error("Error al ingresar los datos");

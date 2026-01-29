@@ -34,7 +34,7 @@ if(isset($_SESSION['usuario']))
                         <option value="J">J</option>
                         <option value="G">G</option>
                     </select>
-                    <input type="text" class="form-control" id="txtcedula" name="txtcedula">
+                    <input type="text" class="form-control" id="txtcedula" name="txtcedula" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="10">
                 </div>
             </div>
             <label>Nombre (*)</label>
@@ -44,7 +44,7 @@ if(isset($_SESSION['usuario']))
             <label>Direccion</label>
             <input type="text" class="form-control" id="txtdireccion" name="txtdireccion">
             <label>Telefono</label>
-            <input type="text" class="form-control" id="txttelefono" name="txttelefono">
+            <input type="text" class="form-control" id="txttelefono" name="txttelefono" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11">
             </form>
             </div>
            
@@ -93,7 +93,7 @@ if(isset($_SESSION['usuario']))
             <label>Direccion</label>
             <input type="text" class="form-control" id="txtdireccione" name="txtdireccion">
             <label>Telefono</label>
-            <input type="text" class="form-control" id="txttelefonoe" name="txttelefono">
+            <input type="text" class="form-control" id="txttelefonoe" name="txttelefono" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11">
             <label>Estatus</label>
             <select name="" class="form-control" id="txtestatuse">
                     <option value="A">Activo</option>
@@ -366,6 +366,7 @@ $(document).on('click', '.accionesTabla', function() {
                                 {
                                     alert(r);
                                 }
+                            limpiar();
                         }
                     });
                     }
@@ -378,5 +379,14 @@ $(document).on('click', '.accionesTabla', function() {
             }
         })
     });
+
+    function limpiar(){
+        $('#tipocliente').val('V');
+        $('#txtcedula').val('');
+        $('#txtnombre').val('');
+        $('#txtapellido').val('');
+        $('#txttelefono').val('');
+        $('#txtdireccion').val('');
+    }
 });
 </script>

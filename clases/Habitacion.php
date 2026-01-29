@@ -1,4 +1,5 @@
 <?php
+session_start();
 class Habitacion{
     public function save($datos)
     {
@@ -10,10 +11,17 @@ class Habitacion{
         $precio_hora = $c->test_input($datos[3]);
         $estado_habitacion = $c->test_input($datos[4]);
         $tipo_habitacion = $c->test_input($datos[5]);
-        
-        $sql = "INSERT INTO habitacion(numero,descripcion,id_tipo_habitacion,id_estado_habitacion,precio,precio_hora,estatus) 
-                values('$numero','$desc',$tipo_habitacion,$estado_habitacion,$precio,$precio_hora,'A')";
+        $maxpersona = $c->test_input($datos[6]);
+        $sql = "INSERT INTO habitacion(numero,descripcion,id_tipo_habitacion,id_estado_habitacion,precio,precio_hora,estatus,maxpersona) 
+                values('$numero','$desc',$tipo_habitacion,$estado_habitacion,$precio,$precio_hora,'A',$maxpersona)";
         $result = mysqli_query($conexion,$sql);
+
+        if($result == true){
+            $id = $mysqli->insert_id;
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la habitacion #$id','Habitacion',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
     
@@ -21,16 +29,28 @@ class Habitacion{
     {
         $c = new Conexion();
         $conexion = $c->conectar();
+
         $id = $datos[0];
-        $nombre = $c->test_input($datos[0]);
-        $desc = $c->test_input($datos[1]);
-        $tipo_habitacion = $c->test_input($datos[2]);
-        $estado_habitacion = $c->test_input($datos[3]);
-        $precio = $c->test_input($datos[4]);
-        $estatus = $c->test_input($datos[5]);
-        $sql = "update habitacion set numero = '$numero', descripcion = '$desc', id_tipo_habitacion = $id_tipo_habitacion,
-        id_estado_habitacion = $estado_habitacion, precio = $precio, estatus = '$estatus' where id=$id";
+        $numero = $c->test_input($datos[1]);
+        $desc = $c->test_input($datos[2]);
+        $precio = $c->test_input($datos[3]);
+        $preciohora = $c->test_input($datos[4]);
+        $estado_habitacion = $c->test_input($datos[5]);
+        $tipo_habitacion = $c->test_input($datos[6]);
+        $estatus = $c->test_input($datos[7]);
+        $maxpersona = $c->test_input($datos[8]);
+
+        $sql = "update habitacion set numero = '$numero', 
+            descripcion = '$desc', id_tipo_habitacion = $tipo_habitacion,
+            id_estado_habitacion = $estado_habitacion, precio = $precio, precio_hora = $preciohora, 
+            estatus = '$estatus', 
+            maxpersona = $maxpersona where id=$id";
         $result = mysqli_query($conexion,$sql);
+        if($result == true){
+            $usuario = $_SESSION['usuario'];
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito la habitacion #$id','Cliente',Now())";
+            mysqli_query($conexion,$sqlx);
+        }
         return $result;
     }
     public function delete($id)
@@ -79,7 +99,8 @@ class Habitacion{
                "id_estado_habitacion" =>html_entity_decode($ver[4]),
                "precio" =>html_entity_decode($ver[5]),
                "precio_hora" =>html_entity_decode($ver[6]),
-               "estatus" =>html_entity_decode($ver[7]),
+               "maxpersona" =>html_entity_decode($ver[7]),
+               "estatus" =>html_entity_decode($ver[8]),
              );
             return $datos;
     }

@@ -41,6 +41,50 @@ class Reporte{
 
             return $re ;
     }
+
+    public function inicios_sesion(){
+            $c = new Conexion();
+			$conexion = $c->conectar();
+            $fecha = date('d/m/Y');
+            $sql = "SELECT COUNT(*) as log FROM bitacora where accion = 'Login'";
+            $result= mysqli_query($conexion,$sql);
+            $re=mysqli_fetch_row($result)[0];
+
+            return $re ;
+    }
+
+    public function eventos(){
+            $c = new Conexion();
+			$conexion = $c->conectar();
+            $fecha = date('d/m/Y');
+            $sql = "SELECT COUNT(*) as event FROM bitacora";
+            $result= mysqli_query($conexion,$sql);
+            $re=mysqli_fetch_row($result)[0];
+
+            return $re ;
+    }
+    public function respaldos(){
+            $c = new Conexion();
+			$conexion = $c->conectar();
+            $fecha = date('d/m/Y');
+            $sql = "SELECT count(*) FROM respaldo  ";
+            $result= mysqli_query($conexion,$sql);
+            $re=mysqli_fetch_row($result)[0];
+
+            return $re ;
+    }
+
+    public function respaldoFecUlt(){
+            $c = new Conexion();
+			$conexion = $c->conectar();
+            $fecha = date('d/m/Y');
+            $sql = "SELECT DATE_FORMAT(fecha, '%d/%m/%Y') fecha FROM respaldo  ";
+            $result= mysqli_query($conexion,$sql);
+            $re=mysqli_fetch_row($result)[0];
+
+            return $re ;
+    }
+    
     
     
 }

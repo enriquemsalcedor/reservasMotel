@@ -23,6 +23,18 @@
         case "reporte":
             reporte();
             break;
+        case "acompa":
+            acompa();
+            break;
+        case "addAcomp":
+            addAcomp();
+            break;
+        case "reporte_clientes":
+            reporte_clientes();
+            break;
+        case "deleteAcomp":
+            deleteAcomp();
+            break;
 		default:
 			  echo "{failure:true}";
 			  break;
@@ -52,10 +64,16 @@
                         ('$cedula', '$nombre', '$apellido', '$telefono', '$direccion', 'A')";
            if($mysqli->query($sql)){
                 $id_cliente = $mysqli->insert_id;
-                $sql = "INSERT INTO reservacion ( id_cliente, id_habitacion, fecha_actual, fecha_reserva, fecha_finalizacion, precio_total, estatus) 
-                    VALUES ($id_cliente, $id_habitacion, NOW(), '$fechai', '$fechac', $total, 'A')";
+                $usuario = $_SESSION['usuario'];
+                $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el cliente #$id_cliente','Reserva',Now())";
+                mysqli_query($conexion,$sqlx);
+            
+                $sql = "INSERT INTO reservacion ( id_cliente, id_habitacion, fecha_actual, fecha_reserva, fecha_finalizacion, precio_total, estatus, tipo_reserva) 
+                    VALUES ($id_cliente, $id_habitacion, NOW(), '$fechai', '$fechac', $total, 'A', '$tipo_reserva')";
                 $result = $mysqli->query($sql);
 		        $reserva = $mysqli->insert_id;
+                $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la reserva #$reserva','Reserva',Now())";
+                mysqli_query($conexion,$sqlx);
                 
                 if($result == true){
 
@@ -69,13 +87,16 @@
            }       
 
         }else{
-            $sql = "INSERT INTO reservacion ( id_cliente, id_habitacion, fecha_actual, fecha_reserva, fecha_finalizacion, precio_total, estatus) 
-                VALUES ($id_cliente, $id_habitacion, NOW(), '$fechai', '$fechac', $total, 'A')";
+            $sql = "INSERT INTO reservacion ( id_cliente, id_habitacion, fecha_actual, fecha_reserva, fecha_finalizacion, precio_total, estatus, tipo_reserva) 
+                VALUES ($id_cliente, $id_habitacion, NOW(), '$fechai', '$fechac', $total, 'A', '$tipo_reserva')";
             $result = $mysqli->query($sql);
 		    $reserva = $mysqli->insert_id;
                 
             if($result == true){
                 updateReservaHabitacion($id_habitacion);
+                $usuario = $_SESSION['usuario'];
+                $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la reserva #$reserva','Reserva',Now())";
+                mysqli_query($conexion,$sqlx);
             }
             
             $response = array(			
@@ -90,8 +111,10 @@
     function updateReservaHabitacion($id){
         global $mysqli;
         $sql = "update habitacion set id_estado_habitacion = 1 where id=$id";
-        echo $sql;
         $mysqli->query($sql);
+        $usuario = $_SESSION['usuario'];
+                $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito estado de la habitacion #$id','Reserva',Now())";
+                mysqli_query($conexion,$sqlx);
 
     }
 
@@ -219,7 +242,7 @@
         
         $sql1 = "update habitacion set id_estado_habitacion = 2 where id=$habitacion";
         $mysqli->query($sql1);
-        $sql2 = "update reservacion set estatus = F where id=$reserva";
+        $sql2 = "update reservacion set estatus = 'F' where id=$reserva";
         $mysqli->query($sql2);
 
         echo 1;
@@ -229,7 +252,7 @@
     function reporte(){
         global $mysqli;
 
-        $estado = $_REQUEST['estado'];
+        $tiporeserva = $_REQUEST['tiporeserva'];
         $tipo = $_REQUEST['tipo'];
 
         $fechai = $_REQUEST['fechai'];
@@ -245,23 +268,18 @@
                 JOIN tipo_habitacion t ON t.id = h.id_tipo_habitacion";
 
 
-        if($estado != 0){
-            $sql .= " AND id_estado_habitacion = $estado ";
+        if($tiporeserva != 0){
+            $sql .= " AND r.tipo_reserva = $tiporeserva ";
         }
 
         if($tipo != 0){
-            $sql .= " AND id_tipo_habitacion = $tipo ";
+            $sql .= " AND h.id_tipo_habitacion = $tipo ";
         }
 
-        if($fechai != ''){
-            $sql .= " AND DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$fechai'";
+        if($fechai != '' && $fechaf != ''){
+            $sql .= " AND (DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') BETWEEN DATE_FORMAT('$fechai', '%d/%m/%Y') AND DATE_FORMAT('$fechaf', '%d/%m/%Y'))";
         }
 
-        if($fechaf != ''){
-            $sql .= " AND DATE_FORMAT(fecha_finalizacion, '%d/%m/%Y') = '$fechaf'";
-        }
-
-             
 
         $result = $mysqli->query($sql);
         $tabla = '';
@@ -300,5 +318,113 @@
             
         echo $tabla;
 
+    }
+
+    function acompa(){
+        global $mysqli;
+        $reserva = $_REQUEST['reserva'];
+
+        $sql = "SELECT * FROM acompanante WHERE id_reserva = $reserva";
+         $result = $mysqli->query($sql);
+        $tabla = '';
+        $tabla .= '
+                <thead>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>Apellido</td>
+                        <td>Telefono</td>
+                        <td>Eliminar</td>
+                    </tr>
+                </thead>
+                ';
+        while($row = $result->fetch_assoc()){
+
+            $tabla .= '
+                <tr>
+                    <td>'.$row['nombre'].'</td>
+                    <td>'.$row['apellido'].'</td>
+                    <td>'.$row['telefono'].'</td>
+                    <td><button id="'.$row['id'].'"  type="button" class="fa fa-times btn btn-danger deleteAcomp"></button></td>
+                </tr>';
+        }
+        echo $tabla;
+
+    }
+
+    function addAcomp(){
+        global $mysqli;
+
+        $nombre = $_REQUEST['nombre'];
+        $apellido = $_REQUEST['apellido'];
+        $telefono = $_REQUEST['telefono'];
+        $reserva = $_REQUEST['reserva'];
+        $limit = $_REQUEST['limit'];
+
+        $sql ="SELECT count(*) as cant FROM acompanante WHERE id_reserva = $reserva";
+        $resultP = $mysqli->query($sql); 
+		$rowP = $resultP->fetch_assoc();
+        if($rowP['cant'] >= ($limit-1)){
+            echo 0;
+        }else{
+            $sql = "INSERT INTO acompanante(nombre,apellido,telefono,id_reserva) values('$nombre','$apellido','$telefono',$reserva)";
+            $mysqli->query($sql);
+            echo 1;
+        }
+
+
+    }
+
+    function deleteAcomp(){
+        global $mysqli;
+
+        $id = $_REQUEST['id'];
+        $sql = "delete from acompanante where id=$id";
+        $result = $mysqli->query($sql);
+        return 1;
+
+    }
+
+    function reporte_clientes(){
+        global $mysqli;
+
+        $fechai = $_REQUEST['fechai'];
+        $fechaf = $_REQUEST['fechaf'];
+
+        $sql = "SELECT CONCAT(c.tipo_cliente, '', c.cedula) as 
+                cedula, CONCAT(c.nombre, ' ', c.apellido) as cliente, c.telefono, 
+                count(r.id_cliente) as visitas FROM reservacion r 
+                JOIN cliente c ON c.id = r.id_cliente WHERE 1";
+
+        if($fechai != '' && $fechaf != ''){
+            $sql .= " AND (DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') BETWEEN DATE_FORMAT('$fechai', '%d/%m/%Y') AND DATE_FORMAT('$fechaf', '%d/%m/%Y'))";
+        }
+
+        $sql.= " GROUP BY r.id_cliente ORDER BY visitas";
+
+
+        $result = $mysqli->query($sql);
+        $tabla = '';
+        $tabla .= '
+                <thead>
+                    <tr>
+                        <td>Cedula</td>
+                        <td>Cliente</td>
+                        <td>Telefono</td>
+                        <td>Nro. Reservas</td>                        
+                    </tr>
+                </thead>
+                ';
+        while($row = $result->fetch_assoc()){
+
+            $tabla .= '
+                    <tr>
+                        <td>'.$row['cedula'].'</td>
+                        <td>'.$row['cliente'].'</td>
+                        <td>'.$row['telefono'].'</td>
+                        <td>'.$row['visitas'].'</td>
+                    </tr>              
+                    ';
+        }   
+        echo $tabla;
 
     }
