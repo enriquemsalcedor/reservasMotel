@@ -51,7 +51,7 @@
         global $mysqli;
 
        	$sql = "select * from respaldo order by id desc";
-        echo $sql;
+        $result = $mysqli->query($sql);
 		$tabla = '';
         $tabla .= '
                 <thead>
@@ -84,8 +84,11 @@
        	global $mysqli;
         $usuario = $_SESSION['usuario'];
         $sql = "INSERT INTO respaldo (usuario, fecha) VALUES ('$usuario', NOW())";
-        mysqli->query($sql);
-            echo 1;        
+        if($mysqli->query($sql)){
+            echo 1;      
+        }else{
+            echo 0;
+        }  
         
     }
 

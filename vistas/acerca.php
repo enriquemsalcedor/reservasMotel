@@ -47,7 +47,7 @@ date_default_timezone_set("America/Lima");
                                         <div class="card-box noradius noborder" style="height: 170px;">
                                                 <h5 class=" text-uppercase m-b-20">Manual de usuario</h5>
                                                 <p>Documento redactado para administradores del sistema, que describe cómo configurar, gestionar y mantener el sistema o realizar procesos de manera mas eficiente.</p>
-                                                <button  type="button" class="fa fa-file-pdf-o btn btn-success"> Descargar PDF</button>
+                                                <button  type="button" class="fa fa-file-pdf-o btn btn-warning manuusu"> Descargar PDF</button>
 
                                         </div>
                                 </div>
@@ -56,7 +56,7 @@ date_default_timezone_set("America/Lima");
                                         <div class="card-box noradius noborder" style="height: 170px;">
                                                 <h5 class=" text-uppercase m-b-20">Manual de sistema</h5>
                                                 <p>Guía dirigida al usuario final que explica, de forma sencilla cómo hacer uso de las funcionalidares básicas del sistema, para asi prestar un servicio optimo al cliente.</p>
-                                                <button  type="button" class="fa fa-file-pdf-o btn btn-"> Descargar PDF</button>                                                  
+                                                <button  type="button" class="fa fa-file-pdf-o btn btn-warning manusis"> Descargar PDF</button>                                                  
                                                 
                                         </div>
                                 </div>
@@ -208,6 +208,11 @@ function reservaDia(){
     function descargarManualUsu(){
         window.open ("../documentos/_Manual Usuario.pdf");
     }
+
+        $(document).on("click", ".manusis", descargarManualSis);
+
+        $(document).on("click", ".manuusu", descargarManualUsu);
+
 </script>
 	
 	

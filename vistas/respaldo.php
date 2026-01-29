@@ -73,11 +73,31 @@ $(document).ready(function(){
     function generar(){
 
         $.ajax({
-            method : "POST",
-            url : "../procesos/funciones.php",
-            data: 'accion: aggrespaldos'
+            method : "GET",
+            url : "../procesos/funciones.php?accion=aggrespaldos",
+            
         }).done(function(msg) {
-            list();            
+            if(msg == 1){
+                list(); 
+
+            }
+                       
+
+        });
+
+    }
+    function respaldo(){
+
+        $.ajax({
+            method : "GET",
+            url : "../procesos/seguridad/respaldo.php",
+            
+        }).done(function(msg) {
+            if(msg == 1){
+                list(); 
+                
+            }
+                       
 
         });
 
