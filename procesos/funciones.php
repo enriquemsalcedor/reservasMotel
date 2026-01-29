@@ -110,9 +110,9 @@
             LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
             WHERE h.id_estado_habitacion = 2
             UNION
-            SELECT 'Mantenimiento' as name, count(r.id_habitacion) as y, e.color
+            SELECT 'Disponible' as name, count(r.id_habitacion) as y, e.color
             FROM reservacion r 
-            LEFT JOIN habitacion h ON h.id = r.id_habitacion
+            LEFT JOIN habitacion h ON h.id = r.id_habitacion 
             LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
             WHERE h.id_estado_habitacion = 4
             

@@ -167,9 +167,7 @@ $(document).ready(function() {
     reservaDia();
     estados();
 
-    var lx = [];
-    var ly = [];
-    var color = [];
+    
 
     const xValues = ["Reservada", "Disponible", "Mantenimiento", ];
     const yValues = [55, 49, 44];
@@ -180,28 +178,7 @@ $(document).ready(function() {
     ];
     
 
-    const ctx = document.getElementById('myChart');
-
-    new Chart(ctx, {
-    type: "doughnut",
-    data: {
-        labels: xValues,
-        datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-        }]
-    },
-    options: {
-        plugins: {
-        legend: {display:true},
-        title: {
-            display: true,
-            text: "Tipo habitación",
-            font: {size:16}
-        }
-        }
-    }
-    });
+    
 			
 
 } );	
@@ -226,6 +203,14 @@ function reservaDia(){
 
     
     function estados(){
+        var x = [];
+        var y = [];
+        var color = [];
+        const barColors = [
+    "#f50f1b",
+    "#44d605",
+    "#f0e80f",
+    ];
         
         datos = {
                     'accion': 'reporteEstados'
@@ -241,12 +226,35 @@ function reservaDia(){
             var arr = JSON.parse(data);
             $.each(JSON.parse(data), function(i, item) {
                 console.log(item.color);
-                lx.push(item.name);
-                ly.push(parseInt(item.y));
+                x.push(item.name);
+                y.push(parseInt(item.y));
                 color.push(item.color);
             });
-            console.log(lx)
-            console.log(ly)
+            console.log(x)
+            console.log(y)
+
+            const ctx = document.getElementById('myChart');
+
+            new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: x,
+                datasets: [{
+                backgroundColor: barColors,
+                data: y
+                }]
+            },
+            options: {
+                plugins: {
+                legend: {display:true},
+                title: {
+                    display: true,
+                    text: "Tipo habitación",
+                    font: {size:16}
+                }
+                }
+            }
+            });
 
         });
 
