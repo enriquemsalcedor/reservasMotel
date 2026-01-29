@@ -87,8 +87,8 @@ $(document).ready(function(){
 
         $.ajax({
             method : "POST",
-            url : "../procesos/funciones.php",
-            data: 'accion: respaldos'
+            url : "../procesos/funciones.php?accion=respaldos",
+            //data: 'accion: respaldos'
         }).done(function(msg) {
             $("#list").empty();
             $("#list").append(msg);

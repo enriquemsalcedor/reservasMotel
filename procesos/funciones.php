@@ -51,7 +51,8 @@
         global $mysqli;
 
        	$sql = "select * from respaldo order by id desc";
-		
+        echo $sql;
+		$tabla = '';
         $tabla .= '
                 <thead>
                     <tr>

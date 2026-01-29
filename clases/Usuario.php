@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 class Usuario{
     
 		public function login($datos)
@@ -24,6 +24,8 @@ class Usuario{
 					
 					return -1;
 				}else{
+					$sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Login','Usuario',Now())";
+            		mysqli_query($conexion,$sqlx);
 					
 					return 1;
 				}
