@@ -24,9 +24,9 @@ if(isset($_SESSION['usuario']))
         <div class="row">          
            <div class="col-lg-12">
            <form id="frmregistrar">
-            <label>Usuario (*)</label>
+            <label>Usuario <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtusuario" name="txtusuario">
-            <label>Tipo Usuario (*)</label>
+            <label>Tipo Usuario <span style="color: red;">*</span></label>
             <select class="form-control" id="selecttipousuario">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -39,7 +39,7 @@ if(isset($_SESSION['usuario']))
                     <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
                 <?php }?>
             </select>
-            <label>Clave (*)</label>
+            <label>Clave <span style="color: red;">*</span></label>
             <input type="password" class="form-control" id="txtclave" name="txtclave">
             </div>
            
@@ -71,9 +71,9 @@ if(isset($_SESSION['usuario']))
            
            <div class="col-lg-12">
            <form id="frmeditar">
-            <label>Usuario (*)</label>
+            <label>Usuario <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtusuarioe" disabled>
-            <label>Tipo Usuario (*)</label>
+            <label>Tipo Usuario <span style="color: red;">*</span></label>
             <select class="form-control" id="selecttipousuarioe">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -86,14 +86,15 @@ if(isset($_SESSION['usuario']))
                     <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
                 <?php }?>
             </select>
-            <label>Clave (*)</label>
+            <label>Clave <span style="color: red;">*</span></label>
             <input type="password" class="form-control" id="txtclavee" name="txtclavee">
-            <label>Tipo Usuario (*)</label>
+            <label>Tipo Usuario <span style="color: red;">*</span></label>
             <select class="form-control" id="selectestadoe">
                 <option value="A">Activo</option>
                 <option value="I">Inactivo</option>
             </select>
             </form>
+            <span style="color: red;">(*) Requerido</span>
             </div>
            
         </div>
@@ -318,7 +319,8 @@ $(document).on('click', '.accionesTabla', function() {
        usuario = $('#txtusuario').val();
        clave = $('#txtclave').val();
        tipousuario = $('#selecttipousuario').val();
-        if(usuario.length != 0 || clave.length != 0 || tipousuario.length != 0){
+
+        if(usuario.length != 0 && clave.length != 0 && tipousuario.length != 0){
 
             $.get( '../procesos/funciones.php?accion=existUsuario&usuario='+usuario, function(result){
                 if(result == 0){

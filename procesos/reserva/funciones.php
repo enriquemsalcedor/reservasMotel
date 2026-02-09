@@ -153,7 +153,7 @@
                                 <div style="text-align: right;">
                                     <h4 class="text-uppercase m-b-20">#'.$row['numero'].'</h4>
                                     <label class="">'.$row['tipo_habitacion'].'</label><br>
-                                    <label class="text-uppercase m-b-20">$'. number_format($row['precio'], 2, ',', ' ').'</label><br>
+                                    <label class="text-uppercase m-b-20">'. number_format($row['precio'], 2, ',', ' ').' Bs.</label><br>
                                 </div>
                                 ';
                                 
@@ -196,12 +196,13 @@
         $fecha = date('d/m/Y');
         $tabla = '';       
 
-        $sql = "SELECT h.numero, CONCAT(c.nombre,' ',c.apellido) AS cliente, 
+        $sql = "SELECT h.numero, CONCAT(c.nombre,' ',c.apellido) AS cliente, v.placa, v.modelo,
                 DATE_FORMAT(fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
                 DATE_FORMAT(fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion 
                 FROM habitacion h 
                 LEFT JOIN reservacion r ON r.id_habitacion = h.id 
                 LEFT JOIN cliente c ON c.id = r.id_cliente
+                LEFT JOIN vehiculo v ON r.id_cliente = v.idcliente
                 WHERE DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$fecha'";
         
         $result = $mysqli->query($sql);
@@ -212,6 +213,8 @@
                         <td>#</td>
                         <td>Habitación</td>
                         <td>Cliente</td>
+                        <td>Placa Vehiculo</td>
+                        <td>Modelo Vehiculo</td>
                         <td>Fecha Inicio</td>
                         <td>Fecha Fin</td>
                         
@@ -225,6 +228,8 @@
 						<td>'.$row['numero'].'</td>
                         <td>'.$row['cliente'].'</td>
                         <td>'.$row['fecha_reserva'].'</td>
+                        <td>'.$row['placa'].'</td>
+                        <td>'.$row['modelo'].'</td>
                         <td>'.$row['fecha_finalizacion'].'</td>                        
 					</tr>';
             $num++;
@@ -259,11 +264,12 @@
         $fechaf = $_REQUEST['fechaf'];
 
         $sql = "SELECT CONCAT(c.nombre, ' ', c.apellido) as cliente, CONCAT(c.tipo_cliente, c.cedula) as cedula, 
-                h.numero, t.nombre as tipohabitacion, r.precio_total, r.tipo_reserva, 
+                h.numero, t.nombre as tipohabitacion, r.precio_total, r.tipo_reserva, v.placa, v.modelo,
                 DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
                 DATE_FORMAT(r.fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion
                 FROM reservacion r
                 JOIN cliente c ON c.id = r.id_cliente
+                LEFT JOIN vehiculo v ON v.id = c.id
                 JOIN habitacion h ON h.id = r.id_habitacion
                 JOIN tipo_habitacion t ON t.id = h.id_tipo_habitacion";
 
@@ -292,6 +298,8 @@
                         <td>Tipo</td>
                         <td>Precio</td>
                         <td>Tipo reserva</td>
+                        <td>Placa vehiculo</td>
+                        <td>Modelo vehiculo</td>
                         <td>Fecha Inicio</td>
                         <td>Fecha Fin</td>
                         
@@ -308,6 +316,8 @@
                         <td>'.$row['tipohabitacion'].'</td>
                         <td>'.$row['precio_total'].'</td>
                         <td>'.$row['tipo_reserva'].'</td>
+                        <td>'.$row['placa'].'</td>
+                        <td>'.$row['modelo'].'</td>
                         <td>'.$row['fecha_reserva'].'</td>
                         <td>'.$row['fecha_finalizacion'].'</td>
                     </tr>

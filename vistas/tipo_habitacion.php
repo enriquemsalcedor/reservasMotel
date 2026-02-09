@@ -22,9 +22,10 @@ if(isset($_SESSION['usuario']))
       </div>
       <div class="modal-body">
         <div class="row">
-            <label>Nombre</label>
+            <label>Nombre <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtnombre" name="txtnombre">
         </div>
+        <span style="color: red;">(*) Requerido</span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -49,9 +50,10 @@ if(isset($_SESSION['usuario']))
       </div>
       <div class="modal-body">
         <div class="row">
-            <label>Nombre</label>
+            <label>Nombre <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtnombree" name="txtnombree">
         </div>
+        <span style="color: red;">(*) Requerido</span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

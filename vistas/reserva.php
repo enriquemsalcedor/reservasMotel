@@ -135,7 +135,7 @@ date_default_timezone_set("America/Caracas");
                         <label id="lbltipo2">Tipo habitación: </label><br>
                         <label id="lbltotal"> </label>
                     </div>
-                    <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
+                    <div class="col-xs-12 col-md-6 col-lg-6 col-xl-7">
                         <label id="lbltipo">Cliente: </label>
                         <p id="descrip2"></p>
                         <div style="">
@@ -144,6 +144,9 @@ date_default_timezone_set("America/Caracas");
                             <input type="hidden" id="reserva">
                             <input type="hidden" id="habitacion">
                         </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 col-lg-6 col-xl-1">
+                        <button type="button" class="btn btn-primary fa fa-file-pdf-o" id="btnImprimir"></button>
                     </div>
                 </div>
                 <hr>
@@ -484,7 +487,10 @@ $(document).ready(function() {
                 method : "POST",
                 url : "../procesos/reserva/funciones.php?accion=finalizarReserva&habitacion="+hab+"&reserva="+res,
                 }).done(function(msg) {
-                    //listHabitaciones();
+                    listHabitaciones();
+                    $('#modalReservado').modal('hide');
+
+                    
                 });  
             }, function(){
                 
@@ -684,6 +690,14 @@ $(document).ready(function() {
         
 
     }
+
+    $(document).on('click', '#btnImprimir', function() {
+        console.log('--->',reserva)
+        
+        window.open ("../procesos/reporte/impreserva_pdf.php?reserva="+reserva, "_blank");
+
+        
+    });
 
     $(document).on('click', '.deleteAcomp', function() {
         var id = this.id;

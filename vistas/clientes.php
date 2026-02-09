@@ -25,7 +25,7 @@ if(isset($_SESSION['usuario']))
            
            <div class="col-lg-12">
            <form id="frmregistrar">
-            <label>Cedula (*)</label>
+            <label>Cedula <span style="color: red;">*</span></label>
             <div style="display:flex;">
                 <div style="display: flex; width: 100%;">
                     <select name="" class="form-control" id="tipocliente" style="width: 15%; margin-right: 5px;">
@@ -37,15 +37,16 @@ if(isset($_SESSION['usuario']))
                     <input type="text" class="form-control" id="txtcedula" name="txtcedula" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="10">
                 </div>
             </div>
-            <label>Nombre (*)</label>
+            <label>Nombre <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtnombre" name="txtnombre">
-            <label>Apellido (*)</label>
+            <label>Apellido <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtapellido" name="txtapellido">
             <label>Direccion</label>
             <input type="text" class="form-control" id="txtdireccion" name="txtdireccion">
-            <label>Telefono</label>
+            <label>Telefono <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txttelefono" name="txttelefono" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11">
             </form>
+            <span style="color: red;">(*) Requerido</span>
             </div>
            
         </div>
@@ -76,7 +77,7 @@ if(isset($_SESSION['usuario']))
            
            <div class="col-lg-12">
            <form id="frmeditar">
-            <label>Cedula (*)</label>
+            <label>Cedula <span style="color: red;">*</span></label>
             <div style="display: flex; width: 100%;">
                 <select name="" class="form-control" id="tipoclientee" style="width: 15%; margin-right: 5px;" disabled>
                     <option value="V">V</option>
@@ -86,13 +87,13 @@ if(isset($_SESSION['usuario']))
                 </select>
                 <input type="text" class="form-control" id="txtcedulae" name="txtcedula" disabled>
             </div>
-            <label>Nombre (*)</label>
+            <label>Nombre <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtnombree" name="txtnombre">
-            <label>Apellido (*)</label>
+            <label>Apellido <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtapellidoe" name="txtapellido">
             <label>Direccion</label>
             <input type="text" class="form-control" id="txtdireccione" name="txtdireccion">
-            <label>Telefono</label>
+            <label>Telefono <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txttelefonoe" name="txttelefono" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11">
             <label>Estatus</label>
             <select name="" class="form-control" id="txtestatuse">
@@ -100,6 +101,7 @@ if(isset($_SESSION['usuario']))
                     <option value="I">Inactivo</option>
                 </select>
             </form>
+            <span style="color: red;">(*) Requerido</span>
             </div>
            
         </div>

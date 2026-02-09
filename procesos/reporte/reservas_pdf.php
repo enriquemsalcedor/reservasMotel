@@ -77,16 +77,19 @@ $html .= '<th><strong>Habitacion</strong></th>';
 $html .= '<th><strong>Tipo</strong></th>';
 $html .= '<th><strong>Precio</strong></th>';
 $html .= '<th><strong>Tipo reserva</strong></th>';
+$html .= '<th><strong>Placa Vehiculo</strong></th>';
+$html .= '<th><strong>Modelo Vehiculo</strong></th>';
 $html .= '<th><strong>Fecha inicio</strong></th>';
 $html .= '<th><strong>Fecha fin</strong></th>';
 $html .= '</tr>';
 
         $sql = "SELECT CONCAT(c.nombre, ' ', c.apellido) as cliente, CONCAT(c.tipo_cliente, c.cedula) as cedula, 
-                h.numero, t.nombre as tipohabitacion, r.precio_total, r.tipo_reserva, 
+                h.numero, t.nombre as tipohabitacion, r.precio_total, r.tipo_reserva, v.placa, v.modelo,
                 DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
                 DATE_FORMAT(r.fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion
                 FROM reservacion r
                 JOIN cliente c ON c.id = r.id_cliente
+                LEFT JOIN vehiculo v ON v.id = c.id
                 JOIN habitacion h ON h.id = r.id_habitacion
                 JOIN tipo_habitacion t ON t.id = h.id_tipo_habitacion";
 
@@ -112,6 +115,8 @@ $html .= '</tr>';
             $html .= '<th>'.$row['tipohabitacion'].'</th>';
             $html .= '<th>'.$row['precio_total'].'</th>';
             $html .= '<th>'.$row['tipo_reserva'].'</th>';
+            $html .= '<th>'.$row['placa'].'</th>';
+            $html .= '<th>'.$row['modelo'].'</th>';
             $html .= '<th>'.$row['fecha_reserva'].'</th>';
             $html .= '<th>'.$row['fecha_finalizacion'].'</th>';
             $html .= '</tr>';

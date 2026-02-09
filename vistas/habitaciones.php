@@ -25,11 +25,11 @@ if(isset($_SESSION['usuario']))
            
            <div class="col-lg-12">
            <form id="frmregistrar">
-            <label>Numero (*)</label>
+            <label>Numero <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtnumero" name="txtnumero">
-            <label>Descripcion</label>
+            <label>Descripcion <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtdescripcion" name="txtdescripcion">
-            <label>Tipo habitacion</label>
+            <label>Tipo habitacion <span style="color: red;">*</span></label>
             <select class="form-control" id="selecttipohabitacion">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -43,7 +43,7 @@ if(isset($_SESSION['usuario']))
                 <?php }?>
             </select>
             <input type="hidden" class="form-control" id="txttipohabitacion">
-            <label>Estado habitacion</label>
+            <label>Estado habitacion <span style="color: red;">*</span></label>
             <select class="form-control" id="selectestadohabitacion">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -57,13 +57,16 @@ if(isset($_SESSION['usuario']))
                 <?php }?>
             </select>
             <input type="hidden" class="form-control" id="txtestadohabitacion">
-            <label>Precio 24 horas</label>
+            <label>Precio 24 horas <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtprecio" name="txtprecio" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-            <label>Precio 1 hora</label>
+            <label>Precio 1 hora <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtpreciohora" name="txtpreciohora" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-            <label>Maximo de personas</label>
-            <input type="number" class="form-control" id="txtmaxpersona" name="txtmaxpersona" value='1'>
-             </form>
+            <label>Maximo de personas <span style="color: red;">*</span></label>
+            <input type="number" class="form-control" id="txtmaxpersona" name="txtmaxpersona" value='1' min='1'>
+            </form>
+            <div>
+                <span style="color: red;">(*) Requerido</span>
+            </div>
             </div>
            
         </div>
@@ -93,11 +96,11 @@ if(isset($_SESSION['usuario']))
         <div class="row">
            
            <div class="col-lg-12">
-           <label>Numero (*)</label>
+           <label>Numero <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtnumeroe" name="txtnumero">
-            <label>Descripcion</label>
+            <label>Descripcion <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtdescripcione" name="txtdescripcion">
-            <label>Tipo habitacion</label>
+            <label>Tipo habitacion <span style="color: red;">*</span></label>
             <select class="form-control" id="selecttipohabitacione">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -111,7 +114,7 @@ if(isset($_SESSION['usuario']))
                 <?php }?>
             </select>
             <input type="hidden" class="form-control" id="txttipohabitacione">
-            <label>Estado habitacion</label>
+            <label>Estado habitacion <span style="color: red;">*</span></label>
             <select class="form-control" id="selectestadohabitacione">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -125,19 +128,23 @@ if(isset($_SESSION['usuario']))
                 <?php }?>
             </select>
             <input type="hidden" class="form-control" id="txtestadohabitacione">
-            <label>Precio 24 horas</label>
+            <label>Precio 24 horas <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtprecioe" name="txtprecio" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-            <label>Precio 1 hora</label>
+            <label>Precio 1 hora <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtpreciohorae" name="txtpreciohora" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-            <label>Maximo de personas</label>
-            <input type="number" class="form-control" id="txtmaxpersonae" name="txtmaxpersonae">
-            <label>Estatus</label>
+            <label>Maximo de personas <span style="color: red;">*</span></label>
+            <input type="number" class="form-control" id="txtmaxpersonae" name="txtmaxpersonae" min='1'>
+            <label>Estatus <span style="color: red;">*</span></label>
             <select class="form-control" id="selectestatuse">
                 <option value="A">Activo</option>
                 <option value="I">Inctivo</option>
             </select>
             <input type="hidden" class="form-control" id="txtestatuse" >
+            <div>
+                <span style="color: red;">(*) Requerido</span>
+            </div>
         </div>
+            
            
         </div>
       </div>
@@ -389,11 +396,11 @@ $(document).on('click', '.accionesTabla', function() {
         estado = $('#txtestadohabitacion').val();
         tipo = $('#txttipohabitacion').val();
         precio_hora = $('#txtpreciohora').val();
-               
-        if(numero.length != 0 || desc.length != 0 || precio.length != 0 || estado.length != 0 ||
-            tipo.length != 0 || precio_hora.length != 0 
+        
+        if(numero.length != 0 && desc.length != 0 && precio.length != 0 && estado.length != 0 &&
+            tipo.length != 0 && precio_hora.length != 0 
         )
-            {
+        {
             datos = {
                     'txtnumero' : $('#txtnumero').val(), 
                     'txtdescripcion': $('#txtdescripcion').val(),

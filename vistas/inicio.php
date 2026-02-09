@@ -122,36 +122,28 @@ date_default_timezone_set("America/Lima");
 
                         
                         <div class="row">
-
-                            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">
-                            
-                                <h6>Reservas activas</h6>
-                                <table id="tblreserva" class="table table-bordered table-hover table-condensed">
-                                    
-                                    <tbody>
-
-                                    <?php
-                                        //     require_once '../clases/Conexion.php';
-                                        //     require_once '../clases/Reporte.php';
-                                        //     $obj = new Reporte();
-                                        //     $result = $obj->productos_0();
-                                        // while($fila=mysqli_fetch_row($result))
-                                        {
-                                    ?>
-                                        <tr>
-                                        </tr>
-                                        <?php
-                                    } ?>
-
-                                    </tbody>
-                                </table>
+                            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-8">           
+                                <h6>Reservas en la semana</h6>
+                                <div>
+                                    <canvas id="myChartBarra" style="width:100%;max-width:600px"></canvas>
+                                </div>
                             </div>
                             <div class="col-xs-12 col-md-6 col-lg-6 col-xl-4">
                                 <h6>Reservas por tipo de habitación</h6>
                                 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
                             </div>
+                        </div>   
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6 col-lg-6 col-xl-12">
+                                <br>
+                                <h6>Reservas activas</h6>
+                                <table id="tblreserva" class="table table-bordered table-hover table-condensed">  
+                                    <tbody>
 
-        </div>                   
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                 
 
     </div>
 <!-- END content-page -->
@@ -166,7 +158,7 @@ require 'footer.php';
 $(document).ready(function() {
     reservaDia();
     estados();
-
+    getDolar();
     
 
     const xValues = ["Reservada", "Disponible", "Mantenimiento", ];
@@ -207,10 +199,10 @@ function reservaDia(){
         var y = [];
         var color = [];
         const barColors = [
-    "#f50f1b",
-    "#44d605",
-    "#f0e80f",
-    ];
+            "#f50f1b",
+            "#44d605",
+            "#f0e80f",
+        ];
         
         datos = {
                     'accion': 'reporteEstados'
@@ -260,6 +252,42 @@ function reservaDia(){
 
     }
 
+    function getDolar(){
+        $.get("https://ve.dolarapi.com/v1/dolares/oficial", function( data ) {
+            console.log( data );
+            $('#dolar').append(parseFloat(data.promedio).toFixed(2) + ' Bs.')
+            const fecha = new Date(data.fechaActualizacion);
+            $('#ultima_act').append(fecha.toLocaleDateString())
+            
+        });
+    }
+
+const xValues = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"];
+const yValues = [55, 49, 44, 24, 15, 30, 60];
+const barColors = ["blue","blue","blue","blue","blue","blue","blue"];
+
+const ctx = document.getElementById('myChartBarra');
+
+new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {display: false},
+      title: {
+        display: true,
+        text: "",
+        font: {size: 16}
+      }
+    }
+  }
+});
 
 
 </script>

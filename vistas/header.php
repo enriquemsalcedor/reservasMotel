@@ -58,27 +58,18 @@ if(isset($_SESSION['usuario']))
 						
 						<li class="list-inline-item dropdown notif">
                             <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="fa fa-fw fa-question-circle"></i>
+                                <span id="dolar"></span><i class="fa fa-fw fa-usd "></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-arrow dropdown-arrow-success dropdown-lg">
                                 <!-- item-->
                                 <div class="dropdown-item noti-title">
-                                    <h5><small>Ayuda y Soporte</small></h5>
+                                    <span id="ultima_act">Ultima actualizacion: </span>
                                 </div>
 
-                                <!-- item-->
-                                <a target="_blank" href="stock.php" class="dropdown-item notify-item">                                    
-                                    <p class="notify-details ml-0">
-                                        <b></b>
-                                    </p>
-                                </a>                               
+                                                            
 
                             </div>
-                        </li>
-						
-                        
-                        
-					
+                        </li>					
 
                         <li class="list-inline-item dropdown notif">
                             <a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -199,4 +190,5 @@ else {
     header("location:../index.php");    
 }
 ?>
+
 

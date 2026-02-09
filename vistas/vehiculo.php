@@ -25,7 +25,7 @@ if(isset($_SESSION['usuario']))
            
            <div class="col-lg-12">
            <form id="frmregistrar">
-            <label>Cliente (*)</label>
+            <label>Cliente <span style="color: red;">*</span></label>
             <select class="form-control" id="selectcliente">
                 <option value="0">--Seleccione--</option>
                 <?php
@@ -38,11 +38,12 @@ if(isset($_SESSION['usuario']))
                     <option value="<?php echo $fila[0]?>"><?php echo $fila[1]?></option>
                 <?php }?>
             </select>
-            <label>Placa</label>
+            <label>Placa <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtplaca">
-            <label>Modelo</label>
+            <label>Modelo <span style="color: red;">*</span></label>
             <input type="text" class="form-control" id="txtmodelo">
             </form>
+            <span style="color: red;">(*) Requerido</span>
             </div>
            
         </div>
@@ -206,7 +207,7 @@ $(document).on('click', '.accionesTabla', function() {
         sesion = $('#session').val();
        
                
-        if(cliente.length != 0 || placa.length != 0 || modelo.length != 0)
+        if(cliente.length != 0 && placa.length != 0 && modelo.length != 0)
             {
             datos = {
                     'cliente' : cliente, 
@@ -223,7 +224,7 @@ $(document).on('click', '.accionesTabla', function() {
                     
                     if(r==1)
                         {
-                            alertify.success("Habitacióon Registrada Correcamente");
+                            alertify.success("Vehiculo Registrado Correcamente");
                             table.ajax.reload();
                         }
                     else if(r==0)

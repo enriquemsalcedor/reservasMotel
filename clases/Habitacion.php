@@ -67,7 +67,7 @@ class Habitacion{
 			$sql = "SELECT h.*, e.nombre as estado, t.nombre as tipo_habitacion FROM habitacion h 
 				JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id 
 				JOIN estado_habitacion e ON h.id_estado_habitacion = e.id
-                WHERE h.estatus <> 'E'";
+                WHERE h.estatus <> 'E' ORDER BY h.id";
 			$result = mysqli_query($conexion,$sql);
             return $result; 
     }

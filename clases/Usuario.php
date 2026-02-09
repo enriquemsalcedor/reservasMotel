@@ -75,7 +75,6 @@ class Usuario{
 			$sql = "INSERT INTO usuario(usuario,clave,id_tipo_usuario,estatus) values('$usuario','$clave',$tipousuario,'A')";
 			$result = mysqli_query($conexion,$sql);
 			if($result == true){
-				$usuario = $_SESSION['usuario'];
 				$sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el usuario $usuario','Usuario',Now())";
 				mysqli_query($conexion,$sqlx);
 			}
