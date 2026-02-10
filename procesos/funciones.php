@@ -104,23 +104,17 @@
     function reporteEstados(){
         global $mysqli;
         $sql = "
-            SELECT 'Reservada' as name, count(r.id_habitacion) as y, (SELECT color FROM estado_habitacion WHERE id = 1) as color
-            FROM reservacion r 
-            LEFT JOIN habitacion h ON h.id = r.id_habitacion
-            LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
-            WHERE h.id_estado_habitacion = 1
+            SELECT 'Reservada' as name, count(*) as y, (SELECT color FROM estado_habitacion WHERE id = 1) as color
+            FROM habitacion 
+            WHERE id_estado_habitacion = 1 AND estatus = 'A'
             UNION
-            SELECT 'Disponible' as name, count(r.id_habitacion) as y, (SELECT color FROM estado_habitacion WHERE id = 2) as color
-            FROM reservacion r 
-            LEFT JOIN habitacion h ON h.id = r.id_habitacion 
-            LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
-            WHERE h.id_estado_habitacion = 2
+            SELECT 'Disponible' as name, count(*) as y, (SELECT color FROM estado_habitacion WHERE id = 2) as color
+            FROM habitacion 
+            WHERE id_estado_habitacion = 2 AND estatus = 'A'
             UNION
-            SELECT 'Mantenimiento' as name, count(r.id_habitacion) as y, (SELECT color FROM estado_habitacion WHERE id = 4) as color
-            FROM reservacion r 
-            LEFT JOIN habitacion h ON h.id = r.id_habitacion
-            LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
-            WHERE h.id_estado_habitacion = 4
+            SELECT 'Mantenimiento' as name, count(*) as y, (SELECT color FROM estado_habitacion WHERE id = 4) as color
+            FROM habitacion 
+            WHERE id_estado_habitacion = 4 AND estatus = 'A'
             
             ";
         $result = $mysqli->query($sql);
