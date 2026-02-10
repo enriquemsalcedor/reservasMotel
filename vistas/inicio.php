@@ -159,7 +159,7 @@ $(document).ready(function() {
     reservaDia();
     estados();
     getDolar();
-    
+    barras();
 
     const xValues = ["Reservada", "Disponible", "Mantenimiento", ];
     const yValues = [55, 49, 44];
@@ -193,16 +193,58 @@ function reservaDia(){
 
     }
 
+    function barras(){
+        const xValues = [];
+        const yValues = [];
+        const barColors = ["blue","blue","blue","blue","blue","blue","blue"];
+
+        $.get("../procesos/funciones.php?accion=diasSemana", function(data, status){
+            var fechas = JSON.parse(data);
+            fechas.forEach(fecha => {
+                xValues.push(fecha.dias)
+            });
+            console.log(xValues);
+            $.post("../procesos/funciones.php",
+                {
+                    fechas: xValues,
+                    accion: "resevasSemana"
+                },
+                function(data, status){
+                    var reservas = JSON.parse(data);
+                    reservas.forEach(reserva => {
+                        yValues.push(reserva.value)
+                    });
+                });
+                console.log(yValues);
+                const ctx = document.getElementById('myChartBarra');
+                new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                    }]
+                },
+                options: {
+                    plugins: {
+                    legend: {display: false},
+                    title: {
+                        display: true,
+                        text: "",
+                        font: {size: 16}
+                    }
+                    }
+                }
+                });
+        });
+    }
+
     
     function estados(){
         var x = [];
         var y = [];
         var color = [];
-        const barColors = [
-            "#f50f1b",
-            "#44d605",
-            "#f0e80f",
-        ];
         
         datos = {
                     'accion': 'reporteEstados'
@@ -232,7 +274,7 @@ function reservaDia(){
             data: {
                 labels: x,
                 datasets: [{
-                backgroundColor: barColors,
+                backgroundColor: color,
                 data: y
                 }]
             },
@@ -241,7 +283,7 @@ function reservaDia(){
                 legend: {display:true},
                 title: {
                     display: true,
-                    text: "Tipo habitación",
+                    text: "",
                     font: {size:16}
                 }
                 }
@@ -262,32 +304,29 @@ function reservaDia(){
         });
     }
 
-const xValues = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"];
-const yValues = [55, 49, 44, 24, 15, 30, 60];
-const barColors = ["blue","blue","blue","blue","blue","blue","blue"];
+    function imprimirPDF(reserva) {
+        window.open ("../procesos/reporte/impreserva_pdf.php?reserva="+reserva, "_blank");
 
-const ctx = document.getElementById('myChartBarra');
-
-new Chart(ctx, {
-  type: "bar",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    plugins: {
-      legend: {display: false},
-      title: {
-        display: true,
-        text: "",
-        font: {size: 16}
-      }
     }
-  }
-});
+
+    function finalizar(reserva, habitacion) {
+        res = habitacion
+        hab = reserva
+        alertify.confirm('Reserva', '¿Esta seguro que desea finalizar la reserva?', function()
+        {
+            $.ajax({
+            method : "POST",
+            url : "../procesos/reserva/funciones.php?accion=finalizarReserva&habitacion="+hab+"&reserva="+res,
+            }).done(function(msg) {
+                reservaDia();
+                estados();
+                
+            });  
+        }, function(){
+            
+        });
+    }
+
 
 
 </script>

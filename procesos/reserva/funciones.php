@@ -90,8 +90,10 @@
             $sql = "INSERT INTO reservacion ( id_cliente, id_habitacion, fecha_actual, fecha_reserva, fecha_finalizacion, precio_total, estatus, tipo_reserva) 
                 VALUES ($id_cliente, $id_habitacion, NOW(), '$fechai', '$fechac', $total, 'A', '$tipo_reserva')";
             $result = $mysqli->query($sql);
-		    $reserva = $mysqli->insert_id;
-                
+            $reserva = $mysqli->insert_id;
+            $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la reserva #$reserva','Reserva',Now())";
+            mysqli_query($conexion,$sqlx);  
+
             if($result == true){
                 updateReservaHabitacion($id_habitacion);
                 $usuario = $_SESSION['usuario'];
@@ -196,15 +198,14 @@
         $fecha = date('d/m/Y');
         $tabla = '';       
 
-        $sql = "SELECT h.numero, CONCAT(c.nombre,' ',c.apellido) AS cliente, v.placa, v.modelo,
-                DATE_FORMAT(fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
+        $sql = "SELECT h.numero, CONCAT(c.nombre,' ',c.apellido) AS cliente, c.telefono, r.id AS reserva,
+                DATE_FORMAT(fecha_reserva, '%d/%m/%Y') as fecha_reserva, h.id AS habitacion,
                 DATE_FORMAT(fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion 
                 FROM habitacion h 
-                LEFT JOIN reservacion r ON r.id_habitacion = h.id 
-                LEFT JOIN cliente c ON c.id = r.id_cliente
-                LEFT JOIN vehiculo v ON r.id_cliente = v.idcliente
-                WHERE DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$fecha'";
-        
+                 JOIN reservacion r ON r.id_habitacion = h.id 
+                 JOIN cliente c ON c.id = r.id_cliente
+                WHERE DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$fecha' AND r.estatus <>'F'";
+        //echo $sql;
         $result = $mysqli->query($sql);
         $num = 1;
         $tabla .= '
@@ -213,10 +214,10 @@
                         <td>#</td>
                         <td>Habitación</td>
                         <td>Cliente</td>
-                        <td>Placa Vehiculo</td>
-                        <td>Modelo Vehiculo</td>
+                        <td>Telefono</td>
                         <td>Fecha Inicio</td>
                         <td>Fecha Fin</td>
+                        <td></td>
                         
                     </tr>
                 </thead>
@@ -227,10 +228,13 @@
                         <td>'.$num.'</td>
 						<td>'.$row['numero'].'</td>
                         <td>'.$row['cliente'].'</td>
+                        <td>'.$row['telefono'].'</td>
                         <td>'.$row['fecha_reserva'].'</td>
-                        <td>'.$row['placa'].'</td>
-                        <td>'.$row['modelo'].'</td>
-                        <td>'.$row['fecha_finalizacion'].'</td>                        
+                        <td>'.$row['fecha_finalizacion'].'</td>
+                        <td>
+                            <button type="button" class="btn btn-primary fa fa-file-pdf-o" onclick="imprimirPDF('.$row['reserva'].')"></button>
+                            <button type="button" class="btn btn-warning fa fa-clock-o" onclick="finalizar('.$row['reserva'].','.$row['habitacion'].')"></button>
+                        </td>                    
 					</tr>';
             $num++;
         }

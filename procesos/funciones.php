@@ -24,6 +24,12 @@
         case "reporteEstados":
                 reporteEstados();
                 break;
+        case "diasSemana":
+                diasSemana();
+                break;
+        case "resevasSemana":
+                resevasSemana();
+                break;
 		default:
 			  echo "{failure:true}";
 			  break;
@@ -98,19 +104,19 @@
     function reporteEstados(){
         global $mysqli;
         $sql = "
-            SELECT 'Reservada' as name, count(r.id_habitacion) as y, e.color
+            SELECT 'Reservada' as name, count(r.id_habitacion) as y, (SELECT color FROM estado_habitacion WHERE id = 1) as color
             FROM reservacion r 
             LEFT JOIN habitacion h ON h.id = r.id_habitacion
             LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
             WHERE h.id_estado_habitacion = 1
             UNION
-            SELECT 'Disponible' as name, count(r.id_habitacion) as y, e.color
+            SELECT 'Disponible' as name, count(r.id_habitacion) as y, (SELECT color FROM estado_habitacion WHERE id = 2) as color
             FROM reservacion r 
             LEFT JOIN habitacion h ON h.id = r.id_habitacion 
             LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
             WHERE h.id_estado_habitacion = 2
             UNION
-            SELECT 'Mantenimiento' as name, count(r.id_habitacion) as y, e.color
+            SELECT 'Mantenimiento' as name, count(r.id_habitacion) as y, (SELECT color FROM estado_habitacion WHERE id = 4) as color
             FROM reservacion r 
             LEFT JOIN habitacion h ON h.id = r.id_habitacion
             LEFT JOIN estado_habitacion e ON e.id = h.id_estado_habitacion
@@ -127,6 +133,51 @@
 		}
 
         echo json_encode($registros);
+
+    }
+
+    function diasSemana(){
+        global $mysqli;
+        $sql = "SELECT 
+            DATE_FORMAT(
+            DATE_ADD(
+                DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), 
+                INTERVAL seq DAY
+            ) , '%d/%m/%Y') 
+            AS fecha
+        FROM (
+            SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL 
+            SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
+        ) AS dias";
+        $result = $mysqli->query($sql);
+        while($row = $result->fetch_assoc()){
+			$registros[] 	= array(
+				'dias' 	=> $row['fecha'],
+				
+			);
+		}
+
+        echo json_encode($registros);
+
+    }
+
+    function resevasSemana(){
+        global $mysqli;
+        $fechas = $_REQUEST['fechas'];
+        $resultado = array();
+        foreach ($fechas as $value) {
+            $sql ="SELECT count(*) as cant FROM reservacion WHERE DATE_FORMAT(fecha_reserva, '%d/%m/%Y') = '$value'";
+            $result = $mysqli->query($sql);
+            
+            while($row = $result->fetch_assoc()){
+                $resultado[] 	= array(
+                    'value' 	=> $row['cant'],
+                );
+            }
+
+        }
+        echo json_encode($resultado);
+
 
     }
 
