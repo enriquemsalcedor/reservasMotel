@@ -128,7 +128,7 @@
         $estado = $_REQUEST['estado'];
         $tipo = $_REQUEST['tipo'];
 
-        $sql = "SELECT h.numero, h.precio, e.nombre as estado, e.color, t.nombre as tipo_habitacion, h.id
+        $sql = "SELECT h.numero, h.precio, e.nombre as estado, e.color, t.nombre as tipo_habitacion, h.id, h.id_tipo_habitacion
                 FROM habitacion h 
 				JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id 
 				JOIN estado_habitacion e ON h.id_estado_habitacion = e.id
@@ -136,23 +136,34 @@
 
 
         if($estado != 0){
-            $sql .= " AND id_estado_habitacion = $estado ";
+            $sql .= " AND h.id_estado_habitacion = $estado ";
         }
 
         if($tipo != 0){
-            $sql .= " AND id_tipo_habitacion = $tipo ";
+            $sql .= " AND h.id_tipo_habitacion = $tipo ";
         }
         
 
         $result = $mysqli->query($sql);
         $cards = '';
         while($row = $result->fetch_assoc()){
+            $img = '';
+            if($row['id_tipo_habitacion'] == 1){
+                $img = '../assets/images/jacuzzi.png';
+            }else if($row['id_tipo_habitacion'] == 2){
+                $img = '../assets/images/aereo.png';
+            }else if($row['id_tipo_habitacion'] == 3){
+                $img = '../assets/images/clasica.png';
+            }else{
+                $img = '../assets/images/clasica.png';
+            }
+
 
             $cards .= '
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box noradius noborder" style="height: 310px; border-radius: 20px; background-color:'.$row['color'].'">
                                 <div style="display:flex;">
-                                    <i class="fa fa-bed  float-right"></i>
+                                    <img src="'.$img.'" alt="" style="width: 50%;">
                                 </div>
                                 <div style="text-align: right;">
                                     <h4 class="text-uppercase m-b-20">#'.$row['numero'].'</h4>
