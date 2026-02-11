@@ -236,7 +236,7 @@ date_default_timezone_set("America/Caracas");
                         </div> -->
                         
                     </div>
-                    
+                    <input type="text" id="txtdolar">
                     <!-- end row -->
                     <div class="row" id="listhabitaciones">
                     
@@ -263,6 +263,7 @@ require 'footer.php';
 $(document).ready(function() {
     var reserva;
     var maxpersona;
+
     listHabitaciones();
 
     $('#txtnombre').prop('disabled', true);
@@ -300,11 +301,13 @@ $(document).ready(function() {
             $('#lblnumero').html('Habitación: #'+dato['numero']);
             $('#lbltipo').html('Tipo Habitación: '+dato['tipo_habitacion']);
             $('#descrip').html(dato['descripcion'])
-            var total = dato['precio'];
-            var subtotal = dato['precio']-(dato['precio']*16/100);
-            var ivatotal = dato['precio']*16/100;
+
+            var dolar = $('#txtdolar').val()
+            var total = parseFloat(dato['precio'] * dolar).toFixed(2);
+            var subtotal = parseFloat(total-(total*16/100)).toFixed(2);
+            var ivatotal = parseFloat(total*16/100).toFixed(2);
             precio_hora = dato['precio_hora']
-            precio_dia = dato['precio']
+            precio_dia = total
             id_habitacion =  dato['id']
             $('#txtsubtotal').val(subtotal);
             $('#txttotaliva').val(ivatotal);
@@ -501,22 +504,36 @@ $(document).ready(function() {
 
 
     function listHabitaciones(){
-        datos = {
+        var dolarPromedio;
+        $.get("https://ve.dolarapi.com/v1/dolares/oficial", function( data ) {
+            console.log( data );
+            $('#dolar').append(parseFloat(data.promedio).toFixed(2) + ' Bs.')
+            const fecha = new Date(data.fechaActualizacion);
+            $('#ultima_act').append(fecha.toLocaleDateString())
+
+            dolarPromedio = data.promedio;
+            
+            $('#txtdolar').val(dolarPromedio)
+            datos = {
                     'estado' : $('#selectestadohabitacion').val(), 
                     'tipo': $('#selecttipohabitacion').val(),
+                    'dolar': dolarPromedio,
                     'accion': 'habitaciones'
                 }
+            $.ajax({
+                method : "POST",
+                url : "../procesos/reserva/funciones.php",
+                data: datos
+            }).done(function(msg) {
+                $("#listhabitaciones").empty();
+                $("#listhabitaciones").append(msg);
+                
 
-        $.ajax({
-            method : "GET",
-            url : "../procesos/reserva/funciones.php",
-            data: datos
-        }).done(function(msg) {
-            $("#listhabitaciones").empty();
-            $("#listhabitaciones").append(msg);
+            });
             
-
         });
+
+        
 
     }
 
@@ -698,6 +715,7 @@ $(document).ready(function() {
 
         
     });
+
 
     $(document).on('click', '.deleteAcomp', function() {
         var id = this.id;

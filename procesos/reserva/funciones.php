@@ -127,13 +127,13 @@
 
         $estado = $_REQUEST['estado'];
         $tipo = $_REQUEST['tipo'];
+        $dolar = $_REQUEST['dolar'];
 
         $sql = "SELECT h.numero, h.precio, e.nombre as estado, e.color, t.nombre as tipo_habitacion, h.id, h.id_tipo_habitacion
                 FROM habitacion h 
 				JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id 
 				JOIN estado_habitacion e ON h.id_estado_habitacion = e.id
                 WHERE h.estatus <> 'E'";
-
 
         if($estado != 0){
             $sql .= " AND h.id_estado_habitacion = $estado ";
@@ -158,7 +158,6 @@
                 $img = '../assets/images/clasica.png';
             }
 
-
             $cards .= '
                         <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
                             <div class="card-box noradius noborder" style="height: 310px; border-radius: 20px; background-color:'.$row['color'].'">
@@ -168,7 +167,7 @@
                                 <div style="text-align: right;">
                                     <h4 class="text-uppercase m-b-20">#'.$row['numero'].'</h4>
                                     <label class="">'.$row['tipo_habitacion'].'</label><br>
-                                    <label class="text-uppercase m-b-20">'. number_format($row['precio'], 2, ',', ' ').' Bs.</label><br>
+                                    <label class="text-uppercase m-b-20">'. number_format($row['precio'] * $dolar, 2, ',', ' ').' Bs.</label><br>
                                 </div>
                                 ';
                                 
