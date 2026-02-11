@@ -6,7 +6,7 @@
 	if (isset($_REQUEST['accion'])) {
 		$accion = $_REQUEST['accion'];   
 	}
-	
+	session_start();
 	switch($accion){
 		case "save": 
               save();
@@ -58,13 +58,15 @@
         $telefono = (!empty($_REQUEST['telefono']) ? $_REQUEST['telefono'] : 0);
         $direccion = (!empty($_REQUEST['direccion']) ? $_REQUEST['direccion'] : 0);
 
+        $usuario = $_SESSION['usuario'];
+
         if($id_cliente == 0){
 
             $sql = "INSERT INTO cliente (cedula, nombre, apellido, telefono, direccion, estatus) VALUES
                         ('$cedula', '$nombre', '$apellido', '$telefono', '$direccion', 'A')";
            if($mysqli->query($sql)){
                 $id_cliente = $mysqli->insert_id;
-                $usuario = $_SESSION['usuario'];
+                
                 $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo el cliente #$id_cliente','Reserva',Now())";
                 mysqli_query($conexion,$sqlx);
             
@@ -92,13 +94,13 @@
             $result = $mysqli->query($sql);
             $reserva = $mysqli->insert_id;
             $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la reserva #$reserva','Reserva',Now())";
-            mysqli_query($conexion,$sqlx);  
+            $mysqli->query($sqlx); 
 
             if($result == true){
                 updateReservaHabitacion($id_habitacion);
                 $usuario = $_SESSION['usuario'];
                 $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se creo la reserva #$reserva','Reserva',Now())";
-                mysqli_query($conexion,$sqlx);
+                $mysqli->query($sqlx); 
             }
             
             $response = array(			
@@ -116,7 +118,7 @@
         $mysqli->query($sql);
         $usuario = $_SESSION['usuario'];
                 $sqlx = "INSERT INTO bitacora(usuario,accion,modulo,fecha) values('$usuario','Se edito estado de la habitacion #$id','Reserva',Now())";
-                mysqli_query($conexion,$sqlx);
+                $mysqli->query($sqlx); 
 
     }
 
