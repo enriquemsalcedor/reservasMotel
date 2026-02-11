@@ -48,7 +48,7 @@ class Vehiculo{
     {
             $c = new Conexion();
 			$conexion = $c->conectar();
-			$sql = "SELECT c.id, CONCAT(c.nombre, ' ', c.apellido) as cliente
+			$sql = "SELECT DISTINCT c.id, CONCAT(c.nombre, ' ', c.apellido) as cliente
                 FROM reservacion r 
 				JOIN cliente c ON r.id_cliente = c.id 
 				";
