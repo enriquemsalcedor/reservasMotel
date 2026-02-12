@@ -56,7 +56,10 @@ $html .= '<br>';
         LEFT JOIN vehiculo v ON v.id = c.id
         JOIN habitacion h ON h.id = r.id_habitacion
         JOIN tipo_habitacion t ON t.id = h.id_tipo_habitacion
-        WHERE r.id=$reserva";
+        WHERE h.id=$reserva AND r.estatus = 'A'";
+
+        
+        
 
         $result = $mysqli->query($sql);
         while($row = $result->fetch_assoc()){
