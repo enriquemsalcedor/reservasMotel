@@ -236,7 +236,7 @@ date_default_timezone_set("America/Caracas");
                         </div> -->
                         
                     </div>
-                    <input type="text" id="txtdolar">
+                    <input type="hidden" id="txtdolar">
                     <!-- end row -->
                     <div class="row" id="listhabitaciones">
                     
@@ -392,7 +392,7 @@ $(document).ready(function() {
             $('#descrip2').html(dato['cedula']+' '+dato['cliente']) 
             $('#lblfechai').html('Fecha reserva: '+dato['fecha_reserva']) 
             $('#lblfechaf').html(' - Fecha finalizacion: '+dato['fecha_finalizacion']) 
-            $('#lbltotal').html('$'+dato['total']) 
+            $('#lbltotal').html('Bs. '+dato['total']) 
             $('#reserva').val(dato['reserva']) 
             $('#habitacion').val(dato['id'])
 
@@ -507,6 +507,7 @@ $(document).ready(function() {
         var dolarPromedio;
         $.get("https://ve.dolarapi.com/v1/dolares/oficial", function( data ) {
             console.log( data );
+            $('#dolar').empty()
             $('#dolar').append(parseFloat(data.promedio).toFixed(2) + ' Bs.')
             const fecha = new Date(data.fechaActualizacion);
             $('#ultima_act').append(fecha.toLocaleDateString())

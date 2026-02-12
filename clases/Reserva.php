@@ -6,16 +6,17 @@ class Reserva{
         {
             $c = new Conexion();
             $conexion = $c->conectar();
+
             $sql = "SELECT h.id, h.numero, r.precio_total as total, t.nombre as tipo_habitacion, h.descripcion,
                     DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha_reserva, 
                     DATE_FORMAT(r.fecha_finalizacion, '%d/%m/%Y') as fecha_finalizacion, r.id as reserva,
                     CONCAT(c.nombre,' ',c.apellido) as cliente, CONCAT(c.tipo_cliente,'',c.cedula) as cedula,
-                    h.maxpersona
+                    h.maxpersona, r.id
                     FROM habitacion h 
                     JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id
                     JOIN reservacion r ON h.id = r.id_habitacion
                     JOIN cliente c ON r.id_cliente = c.id
-                    WHERE h.id = $id";
+                    WHERE h.id = $id AND r.estatus = 'A'";
             $result = mysqli_query($conexion,$sql);
             $ver = mysqli_fetch_row($result);
             $datos = array(

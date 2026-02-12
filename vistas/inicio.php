@@ -212,7 +212,8 @@ function reservaDia(){
                 function(data, status){
                     var reservas = JSON.parse(data);
                     reservas.forEach(reserva => {
-                        yValues.push(reserva.value)
+                        let valor = parseInt(reserva.value)
+                        yValues.push(valor)
                     });
                 });
                 console.log(yValues);

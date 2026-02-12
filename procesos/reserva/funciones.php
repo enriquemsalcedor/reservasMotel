@@ -349,9 +349,20 @@
     function acompa(){
         global $mysqli;
         $reserva = $_REQUEST['reserva'];
+        $lareserva = '';
+        $sql = "SELECT  r.id
+                    FROM habitacion h 
+                    JOIN tipo_habitacion t ON h.id_tipo_habitacion = t.id
+                    JOIN reservacion r ON h.id = r.id_habitacion
+                    JOIN cliente c ON r.id_cliente = c.id
+                    WHERE h.id = $reserva AND r.estatus = 'A'";
+        $result = $mysqli->query($sql);
+        while($row = $result->fetch_assoc()){
+            $lareserva = $row['id'];
+        }
 
-        $sql = "SELECT * FROM acompanante WHERE id_reserva = $reserva";
-         $result = $mysqli->query($sql);
+        $sql = "SELECT * FROM acompanante WHERE id_reserva = $lareserva";
+        $result = $mysqli->query($sql);
         $tabla = '';
         $tabla .= '
                 <thead>
